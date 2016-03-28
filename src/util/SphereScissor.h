@@ -14,8 +14,6 @@
 #include "glm/vec3.hpp"
 #include <math.h>
 
-#include "Rect.h"
-
 namespace ofxRenderToolkit
 {
     enum class SphereProjectionResult
@@ -143,18 +141,18 @@ namespace ofxRenderToolkit
         return ( SphereProjectionResult::FULL );
     }
 
-    glm::vec2 ScreenCoordFromClipCoord( const glm::vec3& _clipCoord, const Rect& _viewport )
+    glm::vec2 ScreenCoordFromClipCoord( const glm::vec3& _clipCoord, const ofRectangle& _viewport )
     {
-        float x = _viewport.x + ( _clipCoord.x + 1.0f ) * 0.5f * _viewport.w;
-        float y = _viewport.y + ( _clipCoord.y + 1.0f ) * 0.5f * _viewport.h;
+        float x = _viewport.x + ( _clipCoord.x + 1.0f ) * 0.5f * _viewport.width;
+        float y = _viewport.y + ( _clipCoord.y + 1.0f ) * 0.5f * _viewport.height;
 
         return glm::vec2( x, y );
     }
     
-    glm::vec2 ScreenCoordFromClipCoord( const glm::vec2& _clipCoord, const Rect& _viewport )
+    glm::vec2 ScreenCoordFromClipCoord( const glm::vec2& _clipCoord, const ofRectangle& _viewport )
     {
-        float x = _viewport.x + ( _clipCoord.x + 1.0f ) * 0.5f * _viewport.w;
-        float y = _viewport.y + ( _clipCoord.y + 1.0f ) * 0.5f * _viewport.h;
+        float x = _viewport.x + ( _clipCoord.x + 1.0f ) * 0.5f * _viewport.width;
+        float y = _viewport.y + ( _clipCoord.y + 1.0f ) * 0.5f * _viewport.height;
 
         return glm::vec2( x, y );
     }

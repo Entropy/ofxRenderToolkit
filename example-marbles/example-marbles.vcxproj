@@ -411,7 +411,6 @@
     <ClInclude Include="..\src\util\MatrixTools.h" />
     <ClInclude Include="..\src\util\Plane.h" />
     <ClInclude Include="..\src\util\RadixSort.h" />
-    <ClInclude Include="..\src\util\Rect.h" />
     <ClInclude Include="..\src\util\SphereScissor.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\PerViewUbo.h" />

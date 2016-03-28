@@ -697,9 +697,6 @@
     <ClInclude Include="..\src\util\RadixSort.h">
       <Filter>addons\ofxRenderToolkit\src\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\util\Rect.h">
-      <Filter>addons\ofxRenderToolkit\src\util</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\util\SphereScissor.h">
       <Filter>addons\ofxRenderToolkit\src\util</Filter>
     </ClInclude>
