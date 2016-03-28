@@ -117,10 +117,10 @@ namespace ofxRenderToolkit
 
         m_frustumPlanes[2] = m_planesY[0];
         m_frustumPlanes[3] = m_planesY[NUM_PLANES_Y - 1];
-        m_frustumPlanes[2].FlipNormal();
+        m_frustumPlanes[2].flipNormal();
 
         m_frustumPlanes[4] = m_planesX[0];
-        m_frustumPlanes[4].FlipNormal();
+        m_frustumPlanes[4].flipNormal();
 
         m_frustumPlanes[5] = m_planesX[NUM_PLANES_X - 1];
     }
@@ -284,12 +284,12 @@ namespace ofxRenderToolkit
                     if (z < center_z)
                     {
                         const Plane& plane = m_planesZ[z + 1];
-                        plane.IntersectSphereZ(lightPosVS, light.radius, &z_light, &z_radius);
+                        plane.intersectsSphereZ(lightPosVS, light.radius, &z_light, &z_radius);
                     }
                     else
                     {
                         const Plane& plane = m_planesZ[z];
-                        plane.IntersectSphereZ(lightPosVS, light.radius, &z_light, &z_radius);
+                        plane.intersectsSphereZ(lightPosVS, light.radius, &z_light, &z_radius);
                     }
                 }
 
@@ -303,7 +303,7 @@ namespace ofxRenderToolkit
                         if (y < center_y)
                         {
                             const Plane& plane = m_planesY[y + 1];
-                            if (false == plane.IntersectSphereY(z_light, z_radius, &y_light, &y_radius))
+                            if (false == plane.intersectsSphereY(z_light, z_radius, &y_light, &y_radius))
                             {
                                 continue;
                             }
@@ -311,7 +311,7 @@ namespace ofxRenderToolkit
                         else
                         {
                             const Plane& plane = m_planesY[y];
-                            if (false == plane.IntersectSphereY(z_light, z_radius, &y_light, &y_radius))
+                            if (false == plane.intersectsSphereY(z_light, z_radius, &y_light, &y_radius))
                             {
                                 continue;
                             }
@@ -321,12 +321,12 @@ namespace ofxRenderToolkit
                     int x = x0;
                     do {
                         ++x;
-                    } while (x < x1 && -m_planesX[x].SignedDistanceXPlane(y_light) >= y_radius);
+                    } while (x < x1 && -m_planesX[x].signedDistanceXPlane(y_light) >= y_radius);
 
                     int xs = x1 + 1;
                     do {
                         --xs;
-                    } while (xs >= x && m_planesX[xs].SignedDistanceXPlane(y_light) >= y_radius);
+                    } while (xs >= x && m_planesX[xs].signedDistanceXPlane(y_light) >= y_radius);
 
                     for (--x; x <= xs; x++)
                     {

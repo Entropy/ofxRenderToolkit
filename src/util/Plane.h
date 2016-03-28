@@ -47,12 +47,12 @@ namespace ofxRenderToolkit
             return *this;
         }
 
-        glm::vec3 Normal() const
+        glm::vec3 getNormal() const
         {
             return glm::vec3(a, b, c);
         }
 
-        void Normalize()
+        void normalize()
         {
             float invLen = 1.0f / sqrtf(a*a + b*b + c*c);
             a *= invLen;
@@ -61,47 +61,47 @@ namespace ofxRenderToolkit
             d *= invLen;
         }
 
-        float SignedDistance(const glm::vec3& _point) const
+        float signedDistance(const glm::vec3& _point) const
         {
             return a * _point.x + b * _point.y + c * _point.z + d;
         }
 
-        float SignedDistanceXPlane(const glm::vec3& _point) const
+        float signedDistanceXPlane(const glm::vec3& _point) const
         {
             return a * _point.x + c * _point.z + d;
         }
 
-        float UnsignedDistance(const glm::vec3& _point) const
+        float unsignedDistance(const glm::vec3& _point) const
         {
             return fabsf(a * _point.x + b * _point.y + c * _point.z + d);
         }
 
-        float UnsignedDistanceX(const glm::vec3& _point) const
+        float unsignedDistanceX(const glm::vec3& _point) const
         {
             return fabsf(a * _point.x + c * _point.z + d);
         }
 
-        glm::vec3 ClosestPoint(const glm::vec3& _point) const
+        glm::vec3 closestPoint(const glm::vec3& _point) const
         {
-            return glm::vec3(_point.x - a, _point.y - b, _point.z - c) * SignedDistance(_point);
+            return glm::vec3(_point.x - a, _point.y - b, _point.z - c) * signedDistance(_point);
         }
 
-        glm::vec3 ProjectPoint(const glm::vec3& _point) const
+        glm::vec3 projectPoint(const glm::vec3& _point) const
         {
-            return _point - Normal() * SignedDistance(_point);
+            return _point - getNormal() * signedDistance(_point);
         }
 
-        glm::vec3 ProjectPointX(const glm::vec3& _point) const
+        glm::vec3 projectPointX(const glm::vec3& _point) const
         {
-            return _point - glm::vec3(-1.0f, 0.0f, 0.0f) * SignedDistance(_point);
+            return _point - glm::vec3(-1.0f, 0.0f, 0.0f) * signedDistance(_point);
         }
 
-        glm::vec3 ProjectPointY(const glm::vec3& _point) const
+        glm::vec3 projectPointY(const glm::vec3& _point) const
         {
-            return _point - glm::vec3(0.0f, -1.0f, 0.0f) * SignedDistance(_point);
+            return _point - glm::vec3(0.0f, -1.0f, 0.0f) * signedDistance(_point);
         }
 
-        bool IntersectSphere(const glm::vec3& _center, float _radius, glm::vec3 * _circleMidPoint, float * _circleRadius) const
+        bool intersectsSphere(const glm::vec3& _center, float _radius, glm::vec3 * _circleMidPoint, float * _circleRadius) const
         {
             // http://www.ambrsoft.com/TrigoCalc/Sphere/SpherePlaneIntersection_.htm
             // Note: expects plane normal to be normalized (to save on the normalizing of the distToSphereCenter)
@@ -128,7 +128,7 @@ namespace ofxRenderToolkit
         }
 
         // Optimized form for a Y plane
-        bool IntersectSphereY(const glm::vec3& _center, float _radius, glm::vec3 * _circleMidPoint, float * _circleRadius) const
+        bool intersectsSphereY(const glm::vec3& _center, float _radius, glm::vec3 * _circleMidPoint, float * _circleRadius) const
         {
             // http://www.ambrsoft.com/TrigoCalc/Sphere/SpherePlaneIntersection_.htm
             // Note: expects plane normal to be normalized (to save on the normalizing of the distToSphereCenter)
@@ -153,7 +153,7 @@ namespace ofxRenderToolkit
         }
 
         // Optimized form for a Z plane
-        bool IntersectSphereZ(const glm::vec3& _center, float _radius, glm::vec3 * _circleMidPoint, float * _circleRadius) const
+        bool intersectsSphereZ(const glm::vec3& _center, float _radius, glm::vec3 * _circleMidPoint, float * _circleRadius) const
         {
             // http://www.ambrsoft.com/TrigoCalc/Sphere/SpherePlaneIntersection_.htm
             // Note: expects plane normal to be normalized (to save on the normalizing of the distToSphereCenter)
@@ -176,7 +176,7 @@ namespace ofxRenderToolkit
             return true;
         }
 
-        void Flip()
+        void flip()
         {
             a = -a;
             b = -b;
@@ -184,7 +184,7 @@ namespace ofxRenderToolkit
             d = -d;
         }
 
-        void FlipNormal()
+        void flipNormal()
         {
             a = -a;
             b = -b;

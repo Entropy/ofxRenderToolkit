@@ -7,12 +7,12 @@ namespace ofxRenderToolkit
     bool SphereInFrustum(const Plane* _planes, const glm::vec3& _center, float _radius)
     {
         bool bOutside = false;
-        bOutside |= _planes[0].SignedDistance(_center) < -_radius;
-        bOutside |= _planes[1].SignedDistance(_center) > _radius; // TODO(James): Fix this
-        bOutside |= _planes[2].SignedDistance(_center) < -_radius;
-        bOutside |= _planes[3].SignedDistance(_center) < -_radius;
-        bOutside |= _planes[4].SignedDistance(_center) < -_radius;
-        bOutside |= _planes[5].SignedDistance(_center) < -_radius;
+        bOutside |= _planes[0].signedDistance(_center) < -_radius;
+        bOutside |= _planes[1].signedDistance(_center) > _radius; // TODO(James): Fix this
+        bOutside |= _planes[2].signedDistance(_center) < -_radius;
+        bOutside |= _planes[3].signedDistance(_center) < -_radius;
+        bOutside |= _planes[4].signedDistance(_center) < -_radius;
+        bOutside |= _planes[5].signedDistance(_center) < -_radius;
 
         return !bOutside;
     }
@@ -23,7 +23,7 @@ namespace ofxRenderToolkit
         for (int i = 0; i < 6; ++i)
         {
             int out = 0;
-            const glm::vec3& normal = _planes[i].Normal();
+            const glm::vec3& normal = _planes[i].getNormal();
             out += (glm::dot(normal, glm::vec3(_aabbMin.x, _aabbMin.y, _aabbMin.z)) < 0.0f) ? 1 : 0;
             //console() << "i: " << i << " out: " << out << endl;
             out += (glm::dot(normal, glm::vec3(_aabbMax.x, _aabbMin.y, _aabbMin.z)) < 0.0f) ? 1 : 0;
