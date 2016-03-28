@@ -368,6 +368,17 @@ namespace ofxRenderToolkit
         CheckGLError();
     }
 
+    void ClusterGrid::UnbindLightIndexTextures(GLuint _indexTexUnit, GLuint _pointerTableTexUnit)
+    {
+        glActiveTexture(GL_TEXTURE0 + _indexTexUnit);
+        glBindTexture(GL_TEXTURE_BUFFER, 0);
+        CheckGLError();
+
+        glActiveTexture(GL_TEXTURE0 + _pointerTableTexUnit);
+        glBindTexture(GL_TEXTURE_3D, 0);
+        CheckGLError();
+    }
+
     void ClusterGrid::SortLightIndexList()
     {
         // sort the keys and values - this will give us the light indices sorted by cluster type & light type

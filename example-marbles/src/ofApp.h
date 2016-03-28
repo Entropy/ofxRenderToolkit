@@ -19,25 +19,19 @@ public:
     void update();
     void draw();
 
-    void SetupLighting();
+    void setupLighting();
 
+    void createRandomLights();
 
-    void CreateRandomLights();
+    void animateLights();
 
-    void ClearPointLights();
-    void ClearDirectionalLights();
+    void setAppMode( const AppMode _mode );
 
-    void AnimateLights();
-
-    void SetAppMode( const AppMode _mode );
-
-    void DrawSkybox();
-    void DrawScene();
-    void DrawSphereGrid();
+    void drawSkybox();
+    void drawScene();
+    void drawSphereGrid();
 
     void imGui();
-
-
 
     void keyPressed(int key);
     void keyReleased(int key);

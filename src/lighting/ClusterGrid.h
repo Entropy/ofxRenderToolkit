@@ -50,6 +50,7 @@ namespace ofxRenderToolkit
 
         void UpdateLightIndexTextures();
         void BindLightIndexTextures(GLuint _indexTexUnit, GLuint _pointerTableTexUnit);
+        void UnbindLightIndexTextures(GLuint _indexTexUnit, GLuint _pointerTableTexUnit);
 
         inline int GetNumPlanesX() const { return NUM_PLANES_X; };
         inline int GetNumPlanesY() const { return NUM_PLANES_Y; };

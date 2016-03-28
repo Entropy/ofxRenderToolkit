@@ -15,7 +15,7 @@ namespace ofxRenderToolkit
     {
     }
 
-    void LightSystem::Init(const ofCamera& _camera)
+    void LightSystem::setup(const ofCamera& _camera)
     {
         ProjInfo projInfo;
         projInfo.fov = ofDegToRad(_camera.getFov());
@@ -40,7 +40,7 @@ namespace ofxRenderToolkit
         m_pointLights.clear();
     }
 
-    void LightSystem::ConfigureShader(const ofShader& _shader) const
+    void LightSystem::configureShader(const ofShader& _shader) const
     {
         _shader.begin();
         _shader.bindUniformBlock(m_pointLightUboBinding, "LightBlock");
@@ -49,27 +49,27 @@ namespace ofxRenderToolkit
         _shader.end();
     }
 
-    void LightSystem::SetPointLightUboBinding(uint8_t _binding)
+    void LightSystem::setPointLightUboBinding(uint8_t _binding)
     {
         m_pointLightUboBinding = _binding;
     }
 
-    void LightSystem::SetLightIndexTexUnit(uint8_t _texUnit)
+    void LightSystem::setLightIndexTexUnit(uint8_t _texUnit)
     {
         m_lightIndexTexUnit = _texUnit;
     }
 
-    void LightSystem::SetLightPointerTexUnit(uint8_t _texUnit)
+    void LightSystem::setLightPointerTexUnit(uint8_t _texUnit)
     {
         m_lightPointerTexUnit = _texUnit;
     }
 
-    void LightSystem::SetAmbientIntensity(float _intensity)
+    void LightSystem::setAmbientIntensity(float _intensity)
     {
         m_ambientIntensity = _intensity;
     }
 
-    void LightSystem::AddPointLight(const PointLight& _light)
+    void LightSystem::addPointLight(const PointLight& _light)
     {
         assert(m_pointLights.size() < skMaxPointLights);
 
@@ -79,7 +79,7 @@ namespace ofxRenderToolkit
         }
     }
 
-    void LightSystem::AddDirectionalLight(const DirectionalLight& _light)
+    void LightSystem::addDirectionalLight(const DirectionalLight& _light)
     {
         assert(m_directionalLights.size() < skMaxDirectionalLights);
 
@@ -90,16 +90,16 @@ namespace ofxRenderToolkit
     }
 
 
-    void LightSystem::Update(const ofCamera& _camera)
+    void LightSystem::update(const ofCamera& _camera)
     {
         m_clusterGrid.CullPointLights(_camera.getModelViewMatrix(), m_pointLights);
         m_clusterGrid.SortLightIndexList();
         m_clusterGrid.UpdateLightIndexTextures();
 
-        UpdateUbo();
+        updateUbo();
     }
 
-    void LightSystem::UpdateUbo()
+    void LightSystem::updateUbo()
     {
         // updateData() will use direct state access (DSA) on GL 4.5, faster than map?
         m_pointLightUbo.unbind(GL_UNIFORM_BUFFER);
@@ -115,13 +115,19 @@ namespace ofxRenderToolkit
         m_pointLightUbo.unmap();
     }
 
-    void LightSystem::Bind()
+    void LightSystem::begin()
     {
         m_clusterGrid.BindLightIndexTextures(m_lightIndexTexUnit, m_lightPointerTexUnit);
         m_pointLightUbo.bindBase(GL_UNIFORM_BUFFER, m_pointLightUboBinding);
     }
 
-    void LightSystem::DebugDrawClusteredPointLights()
+    void LightSystem::end()
+    {
+        m_clusterGrid.UnbindLightIndexTextures(m_lightIndexTexUnit, m_lightPointerTexUnit);
+        m_pointLightUbo.unbindBase(GL_UNIFORM_BUFFER, m_pointLightUboBinding);
+    }
+
+    void LightSystem::debugDrawClusteredPointLights()
     {
         const uint32_t numLightIndices = m_clusterGrid.GetNumPointLightIndices();
         const uint16_t * lightIndices = m_clusterGrid.GetPointLightIndices();
@@ -141,7 +147,7 @@ namespace ofxRenderToolkit
         }
     }
 
-    void LightSystem::DebugDrawCulledPointLights()
+    void LightSystem::debugDrawCulledPointLights()
     {
         const uint32_t numLightIndices = m_clusterGrid.GetNumCulledPointLights();
         const uint16_t * lightIndices = m_clusterGrid.GetCulledPointLightIndices();
@@ -161,12 +167,12 @@ namespace ofxRenderToolkit
         }
     }
 
-    void LightSystem::DebugDrawFrustum(const ofCamera& _camera)
+    void LightSystem::debugDrawFrustum(const ofCamera& _camera)
     {
         m_clusterGridDebug.DrawFrustum(_camera);
     }
 
-    void LightSystem::DebugDrawOccupiedClusters(const ofCamera& _camera)
+    void LightSystem::debugDrawOccupiedClusters(const ofCamera& _camera)
     {
         m_clusterGridDebug.DrawOccupiedClusters(_camera, m_clusterGrid);
     }

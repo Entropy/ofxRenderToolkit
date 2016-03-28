@@ -40,7 +40,7 @@ void ofApp::setup()
     m_viewUbo.ConfigureShader( m_skyboxShader );
 
     // Set up lighting
-    SetupLighting();
+    setupLighting();
 
     m_sphere = ofSpherePrimitive( 1.0f, 24 );
 
@@ -60,19 +60,19 @@ void ofApp::setup()
     m_irradianceMap.loadDDSTexture( "textures/output_iem.dds" );
     m_radianceMap.loadDDSTexture( "textures/output_pmrem.dds" );
 
-    SetAppMode( AppMode::NORMAL_VIEW );
+    setAppMode( AppMode::NORMAL_VIEW );
 
     glEnable( GL_TEXTURE_CUBE_MAP_SEAMLESS );
 }
 
-void ofApp::SetupLighting()
+void ofApp::setupLighting()
 {  
-    m_lightSystem.Init( m_camera );
-    m_lightSystem.ConfigureShader( m_shader );
-    m_lightSystem.SetAmbientIntensity( 0.5f );
+    m_lightSystem.setup( m_camera );
+    m_lightSystem.configureShader( m_shader );
+    m_lightSystem.setAmbientIntensity( 0.5f );
 }
 
-void ofApp::CreateRandomLights()
+void ofApp::createRandomLights()
 {
     // create some random lights
     float positionDist = 330;
@@ -80,33 +80,20 @@ void ofApp::CreateRandomLights()
 
     int numPointLights = 60;
 
-    std::vector<ofxRTK::PointLight>& pointLights = m_lightSystem.GetPointLights();
-    pointLights.clear();
+    m_lightSystem.clearPointLights();
 
     for ( int i = 0; i < numPointLights; ++i )
     {
         glm::vec3 offset = vec3( ofRandom( -positionDist, positionDist ), 0.0f, ofRandom( -positionDist, positionDist ) );
         ofxRTK::PointLight l( offset, vec3( 1.0f, 1.0f, 1.0f ), radius, 6000.0f );
         l.color = vec3( glm::normalize( vec3( ofRandom( 0.0f, 1.0f ), ofRandom( 0.0f, 1.0f ), ofRandom( 0.0f, 1.0f ) ) ) );
-        pointLights.push_back( l );
+        m_lightSystem.addPointLight( l );
     }
 }
 
-void ofApp::ClearPointLights()
+void ofApp::animateLights()
 {
-    std::vector<ofxRTK::PointLight>& pointLights = m_lightSystem.GetPointLights();
-    pointLights.clear();
-}
-
-void ofApp::ClearDirectionalLights()
-{
-    std::vector<ofxRTK::DirectionalLight>& dirLights = m_lightSystem.GetDirectionalLights();
-    dirLights.clear();
-}
-
-void ofApp::AnimateLights()
-{
-    std::vector<ofxRTK::PointLight>& pointLights = m_lightSystem.GetPointLights();
+    std::vector<ofxRTK::PointLight>& pointLights = m_lightSystem.getPointLights();
     for ( int idx = 0; idx < pointLights.size(); ++idx )
     {
         ofxRTK::PointLight& light = pointLights[ idx ];
@@ -114,7 +101,7 @@ void ofApp::AnimateLights()
     }
 }
 
-void ofApp::SetAppMode( const AppMode _mode )
+void ofApp::setAppMode( const AppMode _mode )
 {
     switch ( _mode )
     {
@@ -151,10 +138,10 @@ void ofApp::imGui()
 
         ImGui::BeginGroup();
         ImGui::Text( "Stats" );
-        ImGui::Text( "Visible Lights: %u", m_lightSystem.GetNumVisibleLights() );
-        ImGui::Text( "Culled Lights: %u", m_lightSystem.GetNumCulledPointLights() );
-        ImGui::Text( "Num Affected Clusters: %u", m_lightSystem.GetNumAffectedClusters() );
-        ImGui::Text( "Num Light Indices: %u", m_lightSystem.GetNumPointLightIndices() );
+        ImGui::Text( "Visible Lights: %u", m_lightSystem.getNumVisibleLights() );
+        ImGui::Text( "Culled Lights: %u", m_lightSystem.getNumCulledPointLights() );
+        ImGui::Text( "Num Affected Clusters: %u", m_lightSystem.getNumAffectedClusters() );
+        ImGui::Text( "Num Light Indices: %u", m_lightSystem.getNumPointLightIndices() );
         ImGui::Text( "Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate );
         ImGui::EndGroup();
 
@@ -165,38 +152,37 @@ void ofApp::imGui()
 
         if ( ImGui::Button( "Create Point Lights" ) )
         {
-            CreateRandomLights();
+            createRandomLights();
         }
 
         ImGui::SameLine();
 
         if ( ImGui::Button( "Clear Point Lights" ) )
         {
-            ClearPointLights();
+            m_lightSystem.clearPointLights();
         }
 
 
         if ( ImGui::Button( "Add Dir Light" ) )
         {
-            ClearDirectionalLights();
+            m_lightSystem.clearDirectionalLights();
 
             ofxRTK::DirectionalLight dirLight1;
             dirLight1.color = glm::vec3( 1.0f, 1.0f, 1.0f );
             dirLight1.direction = glm::normalize( glm::vec3( 1.0f, -1.0f, 0.0f ) );
             dirLight1.intensity = 1.0f;
 
-            m_lightSystem.AddDirectionalLight( dirLight1 );
+            m_lightSystem.addDirectionalLight( dirLight1 );
         }
 
         ImGui::SameLine();
 
         if ( ImGui::Button( "Clear Dir Light" ) )
         {
-            ClearDirectionalLights();
+            m_lightSystem.clearDirectionalLights();
         }
 
-
-        std::vector<ofxRTK::DirectionalLight>& dirLights = m_lightSystem.GetDirectionalLights();
+        std::vector<ofxRTK::DirectionalLight>& dirLights = m_lightSystem.getDirectionalLights();
         if ( dirLights.size() != 0 )
         {
             ImGui::ColorEdit3( "Color", (float *)&dirLights.at(0).color );
@@ -207,7 +193,7 @@ void ofApp::imGui()
     m_gui.end();
 }
 
-void ofApp::DrawSkybox()
+void ofApp::drawSkybox()
 {
     glDisable( GL_CULL_FACE );
     ofDisableDepthTest();
@@ -226,12 +212,12 @@ void ofApp::DrawSkybox()
     glEnable( GL_CULL_FACE );
 }
 
-void ofApp::DrawScene()
+void ofApp::drawScene()
 {
-    DrawSphereGrid();
+    drawSphereGrid();
  }
 
-void ofApp::DrawSphereGrid()
+void ofApp::drawSphereGrid()
 {
     glCullFace( GL_FRONT );
 
@@ -267,7 +253,7 @@ void ofApp::DrawSphereGrid()
 //--------------------------------------------------------------
 void ofApp::update()
 {
-    AnimateLights();
+    animateLights();
 
     if ( m_bMouseOverGui ) 
     {
@@ -290,7 +276,6 @@ void ofApp::draw()
     ofClear( ofFloatColor( 0.0f, 0.0f, 0.0f, 1.0f ) );
     ofDisableAlphaBlending();
 
-    m_lightSystem.Bind();
     m_viewUbo.Bind();
 
     m_skyboxMap.bindTexture( 14 );
@@ -304,20 +289,22 @@ void ofApp::draw()
             m_camera.begin();
             {
                 m_viewUbo.Update( m_camera );
-                m_lightSystem.Update( m_camera );
+                m_lightSystem.update( m_camera );
 
                 ofSetColor( 255, 255, 255, 255 );
 
-                DrawSkybox();
+                drawSkybox();
 
-               m_shader.begin();
+                m_lightSystem.begin();
+                m_shader.begin();
                     m_material.setUniforms( m_shader );
                     m_shader.setUniform1f( "uExposure", m_exposure );
                     m_shader.setUniform1f( "uGamma", m_gamma );
                     m_shader.setUniform1i( "uIrradianceMap", 2 );
                     m_shader.setUniform1i( "uRadianceMap", 3 );
-                    DrawScene();
+                    drawScene();
                 m_shader.end();
+                m_lightSystem.end();
              }
             m_camera.end();
 
@@ -330,14 +317,14 @@ void ofApp::draw()
             m_debugCamera.begin();
             {
                 m_viewUbo.Update( m_camera );
-                m_lightSystem.Update( m_camera );
+                m_lightSystem.update( m_camera );
 
                 ofSetColor( 255, 255, 255, 255 );
-                m_lightSystem.DebugDrawFrustum( m_camera );
+                m_lightSystem.debugDrawFrustum( m_camera );
                 
-                m_lightSystem.DebugDrawCulledPointLights();
-                m_lightSystem.DebugDrawClusteredPointLights();
-                m_lightSystem.DebugDrawOccupiedClusters( m_camera );
+                m_lightSystem.debugDrawCulledPointLights();
+                m_lightSystem.debugDrawClusteredPointLights();
+                m_lightSystem.debugDrawOccupiedClusters( m_camera );
             }
             m_debugCamera.end();
         }
@@ -350,11 +337,11 @@ void ofApp::keyPressed(int key){
     switch ( key )
     {
         case '1':
-            SetAppMode( AppMode::NORMAL_VIEW );
+            setAppMode( AppMode::NORMAL_VIEW );
         break;
 
         case '2':
-            SetAppMode( AppMode::DEBUG_VIEW );
+            setAppMode( AppMode::DEBUG_VIEW );
         break;
     }
 }
