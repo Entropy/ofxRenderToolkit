@@ -7,7 +7,6 @@ using namespace glm;
 void ofApp::setup()
 {
     m_gui.setup();
-    ImGui::GetIO().MouseDrawCursor = false;
 
     // Set up cameras
     m_camera.setupPerspective( false, 60.0f, 0.1f, 2000.0f );
@@ -33,11 +32,11 @@ void ofApp::setup()
     m_skyboxShader.load( "shaders/sky_box.vert", "shaders/sky_box.frag" );
     glGenVertexArrays( 1, &m_defaultVao );
 
-    // Set up view ubo
+    // Set up view ubo.
     const int viewUboBinding = 1;
-    m_viewUbo.Init( viewUboBinding );
-    m_viewUbo.ConfigureShader( m_shader );
-    m_viewUbo.ConfigureShader( m_skyboxShader );
+    this->viewUbo.setup(viewUboBinding);
+    this->viewUbo.configureShader(m_shader);
+    this->viewUbo.configureShader(m_skyboxShader);
 
     // Set up lighting
     setupLighting();
@@ -276,36 +275,37 @@ void ofApp::draw()
     ofClear( ofFloatColor( 0.0f, 0.0f, 0.0f, 1.0f ) );
     ofDisableAlphaBlending();
 
-    m_viewUbo.Bind();
-
-    m_skyboxMap.bindTexture( 14 );
-    m_irradianceMap.bindTexture( 2 );
-    m_radianceMap.bindTexture( 3 );
-
-    switch ( m_appMode )
+    this->viewUbo.bind();
     {
+
+        m_skyboxMap.bindTexture(14);
+        m_irradianceMap.bindTexture(2);
+        m_radianceMap.bindTexture(3);
+
+        switch (m_appMode)
+        {
         case AppMode::NORMAL_VIEW:
         {
             m_camera.begin();
             {
-                m_viewUbo.Update( m_camera );
-                m_lightSystem.update( m_camera );
+                this->viewUbo.update(m_camera);
+                m_lightSystem.update(m_camera);
 
-                ofSetColor( 255, 255, 255, 255 );
+                ofSetColor(255, 255, 255, 255);
 
                 drawSkybox();
 
                 m_lightSystem.begin();
                 m_shader.begin();
-                    m_material.setUniforms( m_shader );
-                    m_shader.setUniform1f( "uExposure", m_exposure );
-                    m_shader.setUniform1f( "uGamma", m_gamma );
-                    m_shader.setUniform1i( "uIrradianceMap", 2 );
-                    m_shader.setUniform1i( "uRadianceMap", 3 );
-                    drawScene();
+                m_material.setUniforms(m_shader);
+                m_shader.setUniform1f("uExposure", m_exposure);
+                m_shader.setUniform1f("uGamma", m_gamma);
+                m_shader.setUniform1i("uIrradianceMap", 2);
+                m_shader.setUniform1i("uRadianceMap", 3);
+                drawScene();
                 m_shader.end();
                 m_lightSystem.end();
-             }
+            }
             m_camera.end();
 
             imGui();
@@ -316,20 +316,22 @@ void ofApp::draw()
         {
             m_debugCamera.begin();
             {
-                m_viewUbo.Update( m_camera );
-                m_lightSystem.update( m_camera );
+                this->viewUbo.update(m_camera);
+                m_lightSystem.update(m_camera);
 
-                ofSetColor( 255, 255, 255, 255 );
-                m_lightSystem.debugDrawFrustum( m_camera );
-                
+                ofSetColor(255, 255, 255, 255);
+                m_lightSystem.debugDrawFrustum(m_camera);
+
                 m_lightSystem.debugDrawCulledPointLights();
                 m_lightSystem.debugDrawClusteredPointLights();
-                m_lightSystem.debugDrawOccupiedClusters( m_camera );
+                m_lightSystem.debugDrawOccupiedClusters(m_camera);
             }
             m_debugCamera.end();
         }
         break;
+        }
     }
+    this->viewUbo.unbind();
 }
 
 //--------------------------------------------------------------

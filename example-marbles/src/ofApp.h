@@ -4,15 +4,13 @@
 #include "ofxImGui.h"
 #include "ofxRenderToolkit.h"
 
-#include "PerViewUbo.h"
-
-class ofApp : public ofBaseApp {
-
-enum class AppMode
+class ofApp : public ofBaseApp
 {
-    NORMAL_VIEW = 0,
-    DEBUG_VIEW  = 1
-};
+    enum class AppMode
+    {
+        NORMAL_VIEW = 0,
+        DEBUG_VIEW = 1
+    };
 
 public:
     void setup();
@@ -25,7 +23,7 @@ public:
 
     void animateLights();
 
-    void setAppMode( const AppMode _mode );
+    void setAppMode(const AppMode _mode);
 
     void drawSkybox();
     void drawScene();
@@ -35,7 +33,7 @@ public:
 
     void keyPressed(int key);
     void keyReleased(int key);
-    void mouseMoved(int x, int y );
+    void mouseMoved(int x, int y);
     void mouseDragged(int x, int y, int button);
     void mousePressed(int x, int y, int button);
     void mouseReleased(int x, int y, int button);
@@ -48,8 +46,8 @@ public:
 private:
     AppMode                     m_appMode;
 
-    lb::ViewUbo                 m_viewUbo;
-    ofxRTK::LightSystem             m_lightSystem;
+    ofxRTK::util::ViewUbo       viewUbo;
+    ofxRTK::LightSystem         m_lightSystem;
 
     ofxRTK::CubeMapTexture      m_radianceMap;
     ofxRTK::CubeMapTexture      m_irradianceMap;

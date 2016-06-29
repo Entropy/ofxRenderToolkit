@@ -34,7 +34,7 @@ uniform usamplerBuffer uLightIndexTex;
 
 vec3 GetLightOffsetAndCount( const in vec2 _coord_xy, const in float _vertexZ, out int _lightIndexOffset, out int _pointLightCount )
 {
-    float linearDepth = ( -_vertexZ - viewInfo.nearClip ) / ( viewInfo.farClip - viewInfo.nearClip );
+    float linearDepth = ( -_vertexZ - viewData.nearClip ) / ( viewData.farClip - viewData.nearClip );
     int slice = int( max( linearDepth * NUM_SLICES_Z, 0.0f ) );
 
 /*    const float min_depth = log2( 0.1f );
@@ -44,7 +44,7 @@ vec3 GetLightOffsetAndCount( const in vec2 _coord_xy, const in float _vertexZ, o
 */
 
     ivec3 cluster_coord;
-    cluster_coord.xy = ivec2( _coord_xy * viewInfo.rcpViewportDims * ivec2( NUM_SLICES_X, NUM_SLICES_Y ) );
+    cluster_coord.xy = ivec2( _coord_xy * viewData.rcpViewportSize* ivec2( NUM_SLICES_X, NUM_SLICES_Y ) );
     cluster_coord.z = slice;
 
     uvec4 light_data = texelFetch( uLightPointerTex, cluster_coord, 0 );

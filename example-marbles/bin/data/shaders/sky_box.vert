@@ -12,7 +12,7 @@
 
 #pragma include <inc/of_default_uniforms.glsl>
 
-#pragma include <inc/view_info.glsl>
+#pragma include <inc/viewData.glsl>
 
 smooth out vec3 oEyeDirection;
 
@@ -26,7 +26,7 @@ void main( void )
 {
     vec4 vertex = vec4( triangle_verts[ gl_VertexID ], 0.0f, 1.0f );
     vec3 unprojected = ( inverse( projectionMatrix ) * vertex ).xyz;
-    oEyeDirection = mat3( viewInfo.viewMatrixInverse ) * unprojected;
+    oEyeDirection = mat3( viewData.inverseViewMatrix ) * unprojected;
 
     gl_Position = vec4( vertex.xyz, 1.0f );
 }

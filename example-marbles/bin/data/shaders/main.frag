@@ -12,7 +12,7 @@
 
 #pragma include <inc/of_default_uniforms.glsl>
 
-#pragma include <inc/view_info.glsl>
+#pragma include <inc/viewData.glsl>
 #pragma include <inc/clustered_shading.glsl>
 
 // PBR

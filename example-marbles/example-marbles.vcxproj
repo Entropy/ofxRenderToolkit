@@ -186,6 +186,7 @@
     <ClCompile Include="..\src\Lighting\ClusterGridDebug.cpp" />
     <ClCompile Include="..\src\Lighting\LightSystem.cpp" />
     <ClCompile Include="..\src\PBR\CubeMapTexture.cpp" />
+    <ClCompile Include="..\src\util\ViewUbo.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
   </ItemGroup>
@@ -412,8 +413,8 @@
     <ClInclude Include="..\src\util\Plane.h" />
     <ClInclude Include="..\src\util\RadixSort.h" />
     <ClInclude Include="..\src\util\SphereScissor.h" />
+    <ClInclude Include="..\src\util\ViewUbo.h" />
     <ClInclude Include="src\ofApp.h" />
-    <ClInclude Include="src\PerViewUbo.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
@@ -428,15 +429,18 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="bin\data\shaders\inc\clustered_shading.glsl" />
+    <None Include="bin\data\shaders\inc\computeBrdfLut.frag" />
+    <None Include="bin\data\shaders\inc\math.glsl" />
+    <None Include="bin\data\shaders\inc\of_default_uniforms.glsl" />
+    <None Include="bin\data\shaders\inc\of_default_vertex_in_attributes.glsl" />
     <None Include="bin\data\shaders\inc\pbr.glsl" />
     <None Include="bin\data\shaders\inc\tone_mapping.glsl" />
+    <None Include="bin\data\shaders\inc\viewData.glsl" />
     <None Include="bin\data\shaders\main.frag" />
     <None Include="bin\data\shaders\main.vert" />
-    <None Include="bin\data\shaders\of_default_vertex_in_attributes.glsl" />
-    <None Include="bin\data\shaders\of_default_uniforms.glsl" />
     <None Include="bin\data\shaders\sky_box.frag" />
     <None Include="bin\data\shaders\sky_box.vert" />
-    <None Include="bin\data\shaders\view_info.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ProjectExtensions>

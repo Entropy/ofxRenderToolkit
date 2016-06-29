@@ -13,7 +13,7 @@
 #pragma include <inc/of_default_uniforms.glsl>
 #pragma include <inc/of_default_vertex_in_attributes.glsl> 
 
-#pragma include <inc/view_info.glsl>
+#pragma include <inc/viewData.glsl>
 
 uniform mat3 normalMatrix;
 
@@ -34,9 +34,9 @@ void main( void )
 
     // Cube map vectors
     vec4 eyeDir_vs = vVertex - vec4( 0.0, 0.0, 0.0, 1.0 );
-    vVertex_ws = ( viewInfo.viewMatrixInverse * vVertex).xyz;
-    vEyeDir_ws = vec3( viewInfo.viewMatrixInverse * eyeDir_vs );
-    vNormal_ws = vec3( viewInfo.viewMatrixInverse * vec4( vNormal, 0.0 ) );
+    vVertex_ws = ( viewData.inverseViewMatrix * vVertex).xyz;
+    vEyeDir_ws = vec3( viewData.inverseViewMatrix * eyeDir_vs );
+    vNormal_ws = vec3( viewData.inverseViewMatrix * vec4( vNormal, 0.0 ) );
 
     gl_Position = projectionMatrix * vVertex;
 }
