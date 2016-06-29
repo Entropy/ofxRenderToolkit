@@ -1,9 +1,9 @@
 *.xcodeproj
-example*/bin/data
-example*/bin/libs/
-example*/bin/*
-!example*/bin/data/.gitkeep
-!example*/bin/data/*.png
+bin/data
+bin/libs/
+bin/*
+!bin/data/.gitkeep
+!bin/data/*
 
 
 #########################
@@ -113,3 +113,5 @@ Desktop.ini
 
 .mailmap
 *.opendb
+*.exp
+*.db
