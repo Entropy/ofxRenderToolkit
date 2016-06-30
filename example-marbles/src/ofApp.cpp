@@ -1,18 +1,15 @@
 #include "ofApp.h"
-#include "glm/glm.hpp"
-
-using namespace glm;
 
 //--------------------------------------------------------------
 void ofApp::setup()
 {
     this->gui.setup();
 
-    // Set up cameras
+    // Set up cameras.
     this->camera.setupPerspective( false, 60.0f, 0.1f, 2000.0f );
     this->debugCamera.setupPerspective( false, 60.0f, 1.0f, 10000.0f );
 
-    ofLogNotice() << ofGetWindowWidth() << ", " << ofGetWindowHeight() << endl;
+    ofLogNotice("ofApp::setup") << "Window size: " << ofGetWindowWidth() << "x" << ofGetWindowHeight();
 
     this->camera.setAspectRatio( ofGetWindowWidth() / (float)ofGetWindowHeight() );
     this->debugCamera.setAspectRatio( ofGetWindowWidth() / (float)ofGetWindowHeight() );
@@ -22,17 +19,17 @@ void ofApp::setup()
     this->camera.setAutoDistance( false );
     this->camera.setDistance( 500 );
 
-    ofLogNotice() << this->camera.getNearClip() << ", " << this->camera.getFarClip() << endl;
+    ofLogNotice("ofApp::setup") << "Camera clip: " << this->camera.getNearClip() << ", " << this->camera.getFarClip();
 
-    // Load Shader
-    this->shader.load( "shaders/main.vert", "shaders/main.frag" );
+    // Load shaders.
+    this->shader.load("shaders/main.vert", "shaders/main.frag");
     this->shader.printActiveUniforms();
     this->shader.printActiveUniformBlocks();
 
-    this->skyboxShader.load( "shaders/sky_box.vert", "shaders/sky_box.frag" );
+    this->skyboxShader.load("shaders/sky_box.vert", "shaders/sky_box.frag");
     glGenVertexArrays( 1, &this->defaultVao );
 
-    // Set up view ubo.
+    // Set up view UBO.
     const int viewUboBinding = 1;
     this->viewUbo.setup(viewUboBinding);
     this->viewUbo.configureShader(this->shader);
@@ -43,40 +40,39 @@ void ofApp::setup()
     this->lightingSystem.configureShader(this->shader);
     this->lightingSystem.setAmbientIntensity(0.5f);
 
-    this->sphere = ofSpherePrimitive( 1.0f, 24 );
+    // Set up PBR.
+    this->material.setBaseColor(ofFloatColor(1.0f, 1.0f, 1.0f, 1.0f));
+    this->material.setMetallic(0.0f);
+    this->material.setRoughness(0.0f);
+    this->material.setEmissiveColor(ofFloatColor(1.0f, 0.4f, 0.0f, 1.0f));
+    this->material.setEmissiveIntensity(0.0f);
 
-    this->material.setBaseColor( ofFloatColor( 1.0f, 1.0f, 1.0f, 1.0f ) );
-    this->material.setMetallic( 0.0f );
-    this->material.setRoughness( 0.0f );
-    this->material.setEmissiveColor( ofFloatColor( 1.0f, 0.4f, 0.0f, 1.0f ) );
-    this->material.setEmissiveIntensity( 0.0f );
-   
     float aperture = 0.5f;
     float shutterSpeed = 1.0f / 60.0f;
 
-    this->exposure = ofxRTK::util::CalcEVFromCameraSettings( aperture, shutterSpeed );
+    this->exposure = ofxRTK::util::CalcEVFromCameraSettings(aperture, shutterSpeed);
     this->gamma = 2.2f;
 
-    this->skyboxMap.loadDDSTexture( "textures/output_skybox.dds" );
-    this->irradianceMap.loadDDSTexture( "textures/output_iem.dds" );
-    this->radianceMap.loadDDSTexture( "textures/output_pmrem.dds" );
+    this->skyboxMap.loadDDSTexture("textures/output_skybox.dds");
+    this->irradianceMap.loadDDSTexture("textures/output_iem.dds");
+    this->radianceMap.loadDDSTexture("textures/output_pmrem.dds");
+
+    this->sphere = ofSpherePrimitive(1.0f, 24);
 
     this->debug = false;
 
-    glEnable( GL_TEXTURE_CUBE_MAP_SEAMLESS );
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 }
 
 //--------------------------------------------------------------
 void ofApp::createRandomLights()
 {
-    // create some random lights
-    float positionDist = 330;
-    float radius = 60.0f;
-
-    int numPointLights = 60;
-
     this->lightingSystem.clearPointLights();
 
+    const auto positionDist = 330.0f;
+    const auto radius = 60.0f;
+
+    const auto numPointLights = 60;
     for (int i = 0; i < numPointLights; ++i)
     {
         auto & offset = ofVec3f(ofRandom(-positionDist, positionDist), 0.0f, ofRandom(-positionDist, positionDist));
@@ -120,9 +116,9 @@ void ofApp::imGui()
     this->gui.begin();
     {
         ImGui::Text("Material Properties");
-        ImGui::ColorEdit4("Base Color", (float*)&this->material.baseColor);
+        ImGui::ColorEdit4("Base Color", (float *)&this->material.baseColor);
         ImGui::SliderFloat("Emissive Intensity", &this->material.emissiveIntensity, 0.0f, 1.0f);
-        ImGui::ColorEdit4("Emissive Color", (float*)&this->material.emissiveColor);
+        ImGui::ColorEdit4("Emissive Color", (float *)&this->material.emissiveColor);
 
         ImGui::Separator();
         ImGui::Text("Camera Settings");
@@ -184,33 +180,28 @@ void ofApp::imGui()
 //--------------------------------------------------------------
 void ofApp::drawSkybox()
 {
-    glDisable( GL_CULL_FACE );
+    glDisable(GL_CULL_FACE);
     ofDisableDepthTest();
 
     this->skyboxShader.begin();
-        this->skyboxShader.setUniform1f( "uExposure", this->exposure );
-        this->skyboxShader.setUniform1f( "uGamma", this->gamma );
-        this->skyboxShader.setUniform1i( "uCubeMap", 3 );
-
+    this->skyboxShader.setUniform1f("uExposure", this->exposure);
+    this->skyboxShader.setUniform1f("uGamma", this->gamma);
+    this->skyboxShader.setUniform1i("uCubeMap", 3);
+    {
         // draw full-screen quad
-        glBindVertexArray( this->defaultVao );
-        glDrawArrays( GL_TRIANGLES, 0, 3 );
+        glBindVertexArray(this->defaultVao);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+    }
     this->skyboxShader.end();
 
     ofEnableDepthTest();
-    glEnable( GL_CULL_FACE );
+    glEnable(GL_CULL_FACE);
 }
 
 //--------------------------------------------------------------
 void ofApp::drawScene()
 {
-    drawSphereGrid();
- }
-
-//--------------------------------------------------------------
-void ofApp::drawSphereGrid()
-{
-    glCullFace( GL_FRONT );
+    glCullFace(GL_FRONT);
 
     int numSpheres = 8;
 
@@ -218,33 +209,36 @@ void ofApp::drawSphereGrid()
     float spacing = radius * 2.0f + 15.0f;
     float offset = -numSpheres * spacing * 0.5f;
 
-    for ( int z = 0; z < numSpheres; ++z )
+    for (int z = 0; z < numSpheres; ++z)
     {
-        float zPercent = z / (float)( numSpheres - 1 );
+        float zPercent = z / (float)(numSpheres - 1);
 
-        for ( int x = 0; x < numSpheres; ++x )
+        for (int x = 0; x < numSpheres; ++x)
         {
-            float xPercent = x / (float)( numSpheres - 1 );
-            this->material.metallic = std::max( zPercent, 0.001f );
-            this->material.roughness = std::max( xPercent * xPercent, 0.001f );
-            this->material.setUniforms( this->shader );
+            float xPercent = x / (float)(numSpheres - 1);
+            this->material.metallic = std::max(zPercent, 0.001f);
+            this->material.roughness = std::max(xPercent * xPercent, 0.001f);
+            this->material.setUniforms(this->shader);
 
             ofPushMatrix();
-            ofTranslate( offset + x * spacing, radius * 2.0, offset + z * spacing );
-            ofScale( radius );
-            this->shader.setUniformMatrix3f( "normalMatrix", ofxRTK::util::GetNormalMatrix() );
-            this->sphere.draw();
+            {
+                ofTranslate(offset + x * spacing, radius * 2.0, offset + z * spacing);
+                ofScale(radius);
+                this->shader.setUniformMatrix3f("normalMatrix", ofxRTK::util::GetNormalMatrix());
+                
+                this->sphere.draw();
+            }
             ofPopMatrix();
         }
     }
 
-    glCullFace( GL_BACK );
+    glCullFace(GL_BACK);
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
-    animateLights();
+    this->animateLights();
 
     if (this->mouseOverGui)
     {
@@ -299,18 +293,19 @@ void ofApp::draw()
 
                 ofSetColor(255, 255, 255, 255);
 
-                drawSkybox();
+                this->drawSkybox();
 
                 this->lightingSystem.begin();
                 {
                     this->shader.begin();
-                    this->material.setUniforms(this->shader);
-                    this->shader.setUniform1f("uExposure", this->exposure);
-                    this->shader.setUniform1f("uGamma", this->gamma);
-                    this->shader.setUniform1i("uIrradianceMap", 2);
-                    this->shader.setUniform1i("uRadianceMap", 3);
                     {
-                        drawScene();
+                        this->material.setUniforms(this->shader);
+                        this->shader.setUniform1f("uExposure", this->exposure);
+                        this->shader.setUniform1f("uGamma", this->gamma);
+                        this->shader.setUniform1i("uIrradianceMap", 2);
+                        this->shader.setUniform1i("uRadianceMap", 3);
+                    
+                        this->drawScene();
                     }
                     this->shader.end();
                 }

@@ -19,7 +19,6 @@ public:
 
     void drawSkybox();
     void drawScene();
-    void drawSphereGrid();
 
     void imGui();
 
