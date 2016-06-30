@@ -24,7 +24,7 @@ namespace ofxRenderToolkit
         };
 
         //--------------------------------------------------------------
-        SphereProjectionResult ProjectSphere(const ofVec3f & center, float radius, float focalLength, float aspectRatio, ofVec2f * rectMin, ofVec2f * rectMax)
+        inline SphereProjectionResult ProjectSphere(const ofVec3f & center, float radius, float focalLength, float aspectRatio, ofVec2f * rectMin, ofVec2f * rectMax)
         {
             auto cx = center.x;
             auto cy = center.y;
@@ -150,7 +150,7 @@ namespace ofxRenderToolkit
         }
 
         //--------------------------------------------------------------
-        ofVec2f ScreenCoordFromClipCoord(const ofVec3f & clipCoord, const ofRectangle & viewport)
+        inline ofVec2f ScreenCoordFromClipCoord(const ofVec3f & clipCoord, const ofRectangle & viewport)
         {
             float x = viewport.x + (clipCoord.x + 1.0f) * 0.5f * viewport.width;
             float y = viewport.y + (clipCoord.y + 1.0f) * 0.5f * viewport.height;
@@ -159,7 +159,7 @@ namespace ofxRenderToolkit
         }
 
         //--------------------------------------------------------------
-        ofVec2f ScreenCoordFromClipCoord(const ofVec2f & clipCoord, const ofRectangle & viewport)
+        inline ofVec2f ScreenCoordFromClipCoord(const ofVec2f & clipCoord, const ofRectangle & viewport)
         {
             float x = viewport.x + (clipCoord.x + 1.0f) * 0.5f * viewport.width;
             float y = viewport.y + (clipCoord.y + 1.0f) * 0.5f * viewport.height;

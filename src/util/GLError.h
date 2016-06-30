@@ -2,13 +2,14 @@
 
 #include "ofMain.h"
 
-#define CheckGLError() ofxRenderToolkit::util::_check_gl_error(__FILE__, __LINE__)
+#define CheckGLError() ofxRenderToolkit::util::LogGLError(__FILE__, __LINE__)
 
 namespace ofxRenderToolkit
 {
     namespace util
     {
-        static void _check_gl_error(const char * _file, int _line)
+        //--------------------------------------------------------------
+        static void LogGLError(const char * file, int line)
         {
             GLenum err = glGetError();
 
@@ -37,8 +38,8 @@ namespace ofxRenderToolkit
                     break;
                 }
 
-                ofLogError("ofxRender") << "GL_" << error.c_str() << " - " << err << ", " << _file << ":" << _line;
-                //  ofExit( 0 );
+                ofLogError("ofxRenderToolkit") << "GL_" << error << " - " << err << ", " << file << ":" << line;
+                
                 err = glGetError();
             }
         }

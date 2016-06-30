@@ -9,7 +9,7 @@ namespace ofxRenderToolkit
     namespace util
     {
         //--------------------------------------------------------------
-        bool SphereInFrustum(const Plane * planes, const ofVec3f & center, float radius)
+        inline bool SphereInFrustum(const Plane * planes, const ofVec3f & center, float radius)
         {
             bool bOutside = false;
             bOutside |= planes[0].signedDistance(center) < -radius;
@@ -23,7 +23,7 @@ namespace ofxRenderToolkit
         }
 
         //--------------------------------------------------------------
-        bool BoxInFrustum(const Plane * planes, const ofVec3f & aabbMin, const ofVec3f & aabbMax)
+        inline bool BoxInFrustum(const Plane * planes, const ofVec3f & aabbMin, const ofVec3f & aabbMax)
         {
             // Check all corners of AABB against frustum planes.
             for (int i = 0; i < 6; ++i)

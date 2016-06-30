@@ -186,6 +186,7 @@
     <ClCompile Include="..\src\lighting\ClusterGridDebug.cpp" />
     <ClCompile Include="..\src\lighting\System.cpp" />
     <ClCompile Include="..\src\PBR\CubeMapTexture.cpp" />
+    <ClCompile Include="..\src\pbr\Material.cpp" />
     <ClCompile Include="..\src\util\Plane.cpp" />
     <ClCompile Include="..\src\util\ViewUbo.cpp" />
     <ClCompile Include="src\main.cpp" />

@@ -201,8 +201,8 @@ namespace ofxRenderToolkit
 
             float rcpNearFarLength = 1.0f / (this->projInfo.farZ - this->projInfo.nearZ);
 
-            float horizFov = GetHorizontalFov(this->projInfo.fov, this->projInfo.aspectRatio);
-            float focalLength = GetFocalLength(horizFov);
+            float horizFov = util::GetHorizontalFov(this->projInfo.fov, this->projInfo.aspectRatio);
+            float focalLength = util::GetFocalLength(horizFov);
             float aspectRatio = 1.0f / this->projInfo.aspectRatio; // height / width
 
             for (size_t idx = 0; idx < pointLights.size(); ++idx)
@@ -345,7 +345,7 @@ namespace ofxRenderToolkit
         void ClusterGrid::sortLightIndexList()
         {
             // Sort the keys and values. This will give us the light indices sorted by cluster type & light type.
-            RadixSort16<uint16_t>(this->lightSortKeys, this->tempLightSortKeys, this->lightIndices, this->tempLightIndices, this->numLightIndices);
+            util::RadixSort16<uint16_t>(this->lightSortKeys, this->tempLightSortKeys, this->lightIndices, this->tempLightIndices, this->numLightIndices);
 
             // Update the light index "pointer" list
             uint16_t currKey;

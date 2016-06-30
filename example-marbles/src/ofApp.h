@@ -38,30 +38,30 @@ public:
 private:
     bool debug;
 
-    ofxRTK::util::ViewUbo       viewUbo;
-    ofxRTK::lighting::System    lightingSystem;
+    ofxRTK::util::ViewUbo viewUbo;
+    ofxRTK::lighting::System lightingSystem;
 
-    ofxRTK::CubeMapTexture      m_radianceMap;
-    ofxRTK::CubeMapTexture      m_irradianceMap;
-    ofxRTK::CubeMapTexture      m_skyboxMap;
+    ofxRTK::pbr::CubeMapTexture radianceMap;
+    ofxRTK::pbr::CubeMapTexture irradianceMap;
+    ofxRTK::pbr::CubeMapTexture skyboxMap;
 
-    ofxRTK::Material            m_material;
+    ofxRTK::pbr::Material material;
 
-    ofShader                    m_shader;
-    ofShader                    m_skyboxShader;
-    GLuint                      m_defaultVao;
+    ofShader shader;
+    ofShader skyboxShader;
+    GLuint defaultVao;
 
-    ofShader                    m_integrateDFGShader;
-    ofFbo                       m_dfgFbo;
+    ofShader integrateDFGShader;
+    ofFbo dfgFbo;
 
-    float                       m_exposure;
-    float                       m_gamma;
+    float exposure;
+    float gamma;
 
-    ofEasyCam                   m_camera;
-    ofEasyCam                   m_debugCamera;
+    ofEasyCam camera;
+    ofEasyCam debugCamera;
 
-    ofSpherePrimitive           m_sphere;
+    ofSpherePrimitive sphere;
 
-    ofxImGui                    m_gui;
-    bool                        m_bMouseOverGui;
+    ofxImGui gui;
+    bool mouseOverGui;
 };

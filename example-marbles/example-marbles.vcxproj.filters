@@ -49,6 +49,9 @@
     <ClCompile Include="..\src\util\Plane.cpp">
       <Filter>addons\ofxRenderToolkit\src\util</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\pbr\Material.cpp">
+      <Filter>addons\ofxRenderToolkit\src\pbr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\addons\ofxImGui\src\BaseEngine.h">

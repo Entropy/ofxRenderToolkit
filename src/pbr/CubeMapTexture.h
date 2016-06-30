@@ -4,18 +4,23 @@
 
 namespace ofxRenderToolkit
 {
-    class CubeMapTexture
+    namespace pbr
     {
-    public:
-        CubeMapTexture();
-        ~CubeMapTexture();
+        class CubeMapTexture
+        {
+        public:
+            CubeMapTexture();
+            ~CubeMapTexture();
 
-        void loadDDSTexture(const std::string& _path);
-        void bindTexture(GLuint _texUnit);
+            void loadDDSTexture(const std::string & path);
 
-    private:
-        GLuint createTexture(const std::string& _path);
+            void bind(GLuint texUnit);
+            void unbind(GLuint texUnit);
 
-        GLuint m_texId;
-    };
+        private:
+            GLuint createTexture(const std::string & path);
+
+            GLuint texId;
+        };
+    }
 }
