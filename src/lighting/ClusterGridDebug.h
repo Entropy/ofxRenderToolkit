@@ -3,32 +3,35 @@
 
 namespace ofxRenderToolkit
 {
-    class ClusterGridDebug
+    namespace lighting
     {
-    public:
-        ClusterGridDebug();
-        ~ClusterGridDebug();
+        class ClusterGridDebug
+        {
+        public:
+            ClusterGridDebug();
+            ~ClusterGridDebug();
 
-        void CreateClusterMesh(const ClusterGrid& _clusterGrid, const ProjInfo& _projInfo);
-        void DrawFrustum(const ofCamera& _camera);
-        void DrawCluster(uint16_t _idx);
-        void DrawCluster(const ofCamera& _camera, uint16_t _idx);
-        void DrawCluster(const ofCamera& _camera, uint16_t _x, uint16_t _y, uint16_t _z);
-        void DrawOccupiedClusters(const ofCamera& _camera, const ClusterGrid& _clusterGrid);
+            void createClusterMesh(const ClusterGrid & clusterGrid, const ProjInfo & projInfo);
+            void drawFrustum(const ofCamera & camera);
+            void drawCluster(uint16_t idx);
+            void drawCluster(const ofCamera & camera, uint16_t idx);
+            void drawCluster(const ofCamera & camera, uint16_t x, uint16_t y, uint16_t z);
+            void drawOccupiedClusters(const ofCamera & camera, const ClusterGrid & clusterGrid);
 
-    private:
+        private:
 
-    private:
-        uint16_t            m_numPlanesX;
-        uint16_t            m_numPlanesY;
-        uint16_t            m_numPlanesZ;
+        private:
+            uint16_t numPlanesX;
+            uint16_t numPlanesY;
+            uint16_t numPlanesZ;
 
-        uint16_t            m_numClustersX;
-        uint16_t            m_numClustersY;
-        uint16_t            m_numClustersZ;
-        uint16_t            m_numClusters;
+            uint16_t numClustersX;
+            uint16_t numClustersY;
+            uint16_t numClustersZ;
+            uint16_t numClusters;
 
-        ofVbo               m_clusterVbo;
-        ofVbo               m_frustumVbo;
-    };
+            ofVbo clusterVbo;
+            ofVbo frustumVbo;
+        };
+    }
 }

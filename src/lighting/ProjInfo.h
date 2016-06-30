@@ -2,11 +2,14 @@
 
 namespace ofxRenderToolkit
 {
-    struct ProjInfo
+    namespace lighting
     {
-        float nearZ;
-        float farZ;
-        float fov;
-        float aspectRatio;
-    };
+        struct ProjInfo
+        {
+            float nearZ;
+            float farZ;
+            float fov;
+            float aspectRatio;
+        };
+    }
 }

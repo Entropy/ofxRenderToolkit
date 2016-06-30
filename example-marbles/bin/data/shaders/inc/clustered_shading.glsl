@@ -21,7 +21,7 @@ struct DirectionalLight
     float intensity;
 };
 
-layout (std140) uniform LightBlock
+layout (std140) uniform uLightBlock
 {
     PointLight       pointLights[ MAX_POINT_LIGHTS ];
     DirectionalLight directionalLights[ MAX_DIRECTIONAL_LIGHTS ];

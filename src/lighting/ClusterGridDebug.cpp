@@ -2,288 +2,293 @@
 
 namespace ofxRenderToolkit
 {
-    ClusterGridDebug::ClusterGridDebug()
-    {}
-
-    ClusterGridDebug::~ClusterGridDebug()
-    {}
-
-    void ClusterGridDebug::CreateClusterMesh(const ClusterGrid& _clusterGrid, const ProjInfo& _projInfo)
+    namespace lighting
     {
-        m_numPlanesX = _clusterGrid.GetNumPlanesX();
-        m_numPlanesY = _clusterGrid.GetNumPlanesY();
-        m_numPlanesZ = _clusterGrid.GetNumPlanesZ();
+        //--------------------------------------------------------------
+        ClusterGridDebug::ClusterGridDebug()
+        {}
 
-        m_numClustersX = _clusterGrid.GetNumClustersX();
-        m_numClustersY = _clusterGrid.GetNumClustersY();
-        m_numClustersZ = _clusterGrid.GetNumClustersZ();
-        m_numClusters = m_numClustersX * m_numClustersY * m_numClustersZ;
+        //--------------------------------------------------------------
+        ClusterGridDebug::~ClusterGridDebug()
+        {}
 
-        // half height and width in normalized form
-        float halfNormHeight = std::tanf(_projInfo.fov * 0.5f);
-        float halfNormWidth = halfNormHeight * _projInfo.aspectRatio;
-
-        // half height and width at far plane
-        float halfFarHeight = halfNormHeight * _projInfo.farZ;
-        float halfFarWidth = halfNormWidth * _projInfo.farZ;
-        float halfNearHeight = halfNormHeight * _projInfo.nearZ;
-        float halfNearWidth = halfNormWidth * _projInfo.nearZ;
-
-        float frustumDepth = _projInfo.farZ - _projInfo.nearZ;
-
-        // calculate views space far frustum corner points
-        ofVec3f farTL = ofVec3f(-halfFarWidth, halfFarHeight, -_projInfo.farZ);
-        ofVec3f farTR = ofVec3f(halfFarWidth, halfFarHeight, -_projInfo.farZ);
-        ofVec3f farBL = ofVec3f(-halfFarWidth, -halfFarHeight, -_projInfo.farZ);
-        ofVec3f farBR = ofVec3f(halfFarWidth, -halfFarHeight, -_projInfo.farZ);
-
-        ofVec3f nearTL = ofVec3f(-halfNearWidth, halfNearHeight, -_projInfo.nearZ);
-        ofVec3f nearTR = ofVec3f(halfNearWidth, halfNearHeight, -_projInfo.nearZ);
-        ofVec3f nearBL = ofVec3f(-halfNearWidth, -halfNearHeight, -_projInfo.nearZ);
-        ofVec3f nearBR = ofVec3f(halfNearWidth, -halfNearHeight, -_projInfo.nearZ);
-
-        // calculate X planes
-        float farStepX = (halfFarWidth * 2.0f) / (m_numPlanesX - 1);
-        float farStepY = (halfFarHeight * 2.0f) / (m_numPlanesY - 1);
-
-        float nearStepX = (halfNearWidth * 2.0f) / (m_numPlanesX - 1);
-        float nearStepY = (halfNearHeight * 2.0f) / (m_numPlanesY - 1);
-
-        float stepZ = -frustumDepth / (m_numPlanesZ - 1);
-
-        glm::vec4 clusterColor(1.0f, 1.0f, 1.0f, 0.7f);
-
-        std::vector<ofVec3f> vertices;
-        std::vector<glm::vec4> colors;
-
-        for (int z = 0; z < m_numPlanesZ; ++z)
+        //--------------------------------------------------------------
+        void ClusterGridDebug::createClusterMesh(const ClusterGrid & clusterGrid, const ProjInfo & projInfo)
         {
-            ofVec3f nearPoint = nearBL;
-            ofVec3f farPoint = farBL;
+            this->numPlanesX = clusterGrid.getNumPlanesX();
+            this->numPlanesY = clusterGrid.getNumPlanesY();
+            this->numPlanesZ = clusterGrid.getNumPlanesZ();
 
-            float zPercent = (float)z / (m_numPlanesZ - 1);
+            this->numClustersX = clusterGrid.getNumClustersX();
+            this->numClustersY = clusterGrid.getNumClustersY();
+            this->numClustersZ = clusterGrid.getNumClustersZ();
+            this->numClusters = this->numClustersX * this->numClustersY * this->numClustersZ;
 
-            for (int y = 0; y < m_numPlanesY; ++y)
+            // Half height and width in normalized form.
+            auto halfNormHeight = std::tanf(projInfo.fov * 0.5f);
+            auto halfNormWidth = halfNormHeight * projInfo.aspectRatio;
+
+            // Half height and width at far plane.
+            auto halfFarHeight = halfNormHeight * projInfo.farZ;
+            auto halfFarWidth = halfNormWidth * projInfo.farZ;
+            auto halfNearHeight = halfNormHeight * projInfo.nearZ;
+            auto halfNearWidth = halfNormWidth * projInfo.nearZ;
+
+            auto frustumDepth = projInfo.farZ - projInfo.nearZ;
+
+            // Calculate views space far frustum corner points.
+            auto farTL = ofVec3f(-halfFarWidth, halfFarHeight, -projInfo.farZ);
+            auto farTR = ofVec3f(halfFarWidth, halfFarHeight, -projInfo.farZ);
+            auto farBL = ofVec3f(-halfFarWidth, -halfFarHeight, -projInfo.farZ);
+            auto farBR = ofVec3f(halfFarWidth, -halfFarHeight, -projInfo.farZ);
+
+            auto nearTL = ofVec3f(-halfNearWidth, halfNearHeight, -projInfo.nearZ);
+            auto nearTR = ofVec3f(halfNearWidth, halfNearHeight, -projInfo.nearZ);
+            auto nearBL = ofVec3f(-halfNearWidth, -halfNearHeight, -projInfo.nearZ);
+            auto nearBR = ofVec3f(halfNearWidth, -halfNearHeight, -projInfo.nearZ);
+
+            // Calculate X planes.
+            auto farStepX = (halfFarWidth * 2.0f) / (this->numPlanesX - 1);
+            auto farStepY = (halfFarHeight * 2.0f) / (this->numPlanesY - 1);
+
+            auto nearStepX = (halfNearWidth * 2.0f) / (this->numPlanesX - 1);
+            auto nearStepY = (halfNearHeight * 2.0f) / (this->numPlanesY - 1);
+
+            auto stepZ = -frustumDepth / (this->numPlanesZ - 1);
+
+            auto & clusterColor = ofVec4f(1.0f, 1.0f, 1.0f, 0.7f);
+
+            std::vector<ofVec3f> vertices;
+            std::vector<ofVec4f> colors;
+
+            for (int z = 0; z < this->numPlanesZ; ++z)
             {
-                float yPercent = (float)y / m_numPlanesY;
+                auto nearPoint = nearBL;
+                auto farPoint = farBL;
 
-                for (int x = 0; x < m_numPlanesX; ++x)
+                auto zPercent = (float)z / (this->numPlanesZ - 1);
+
+                for (int y = 0; y < this->numPlanesY; ++y)
                 {
-                    float xPercent = (float)x / m_numPlanesX;
+                    auto yPercent = (float)y / this->numPlanesY;
 
-                    ofVec3f dir = farPoint - nearPoint;
-                    float len = dir.length();
-                    dir.normalize();
+                    for (int x = 0; x < this->numPlanesX; ++x)
+                    {
+                        auto xPercent = (float)x / this->numPlanesX;
 
-                    ofVec3f pt = dir * zPercent * len + nearPoint;
-                    vertices.push_back(pt);
+                        auto dir = farPoint - nearPoint;
+                        auto len = dir.length();
+                        dir.normalize();
 
-                    nearPoint.x += nearStepX;
-                    farPoint.x += farStepX;
-                }
+                        auto pt = dir * zPercent * len + nearPoint;
+                        vertices.push_back(pt);
 
-                nearPoint.x = nearBL.x;
-                farPoint.x = farBL.x;
+                        nearPoint.x += nearStepX;
+                        farPoint.x += farStepX;
+                    }
 
-                nearPoint.y += nearStepY;
-                farPoint.y += farStepY;
-            }
-        }
+                    nearPoint.x = nearBL.x;
+                    farPoint.x = farBL.x;
 
-        std::vector<ofIndexType> clusterIndices;
-
-        for (int z = 0; z < m_numClustersZ; ++z)
-        {
-            for (int y = 0; y < m_numClustersY; ++y)
-            {
-                uint32_t z_offset = m_numPlanesX * m_numPlanesY * z;
-
-                for (int x = 0; x < m_numClustersX; ++x)
-                {
-                    uint32_t y_offset = y * m_numPlanesX;
-
-                    uint32_t tl_front = z_offset + y_offset + x;
-                    uint32_t tr_front = tl_front + 1;
-                    uint32_t bl_front = z_offset + y_offset + m_numPlanesX + x;
-                    uint32_t br_front = bl_front + 1;
-
-                    uint32_t tl_back = tl_front + m_numPlanesX * m_numPlanesY;
-                    uint32_t tr_back = tr_front + m_numPlanesX * m_numPlanesY;
-                    uint32_t bl_back = bl_front + m_numPlanesX * m_numPlanesY;
-                    uint32_t br_back = br_front + m_numPlanesX * m_numPlanesY;
-
-                    // front face
-                    clusterIndices.push_back(tl_front); clusterIndices.push_back(tr_front);
-                    clusterIndices.push_back(tr_front); clusterIndices.push_back(br_front);
-                    clusterIndices.push_back(br_front); clusterIndices.push_back(bl_front);
-                    clusterIndices.push_back(bl_front); clusterIndices.push_back(tl_front);
-
-                    // back face
-                    clusterIndices.push_back(tl_back); clusterIndices.push_back(tr_back);
-                    clusterIndices.push_back(tr_back); clusterIndices.push_back(br_back);
-                    clusterIndices.push_back(br_back); clusterIndices.push_back(bl_back);
-                    clusterIndices.push_back(bl_back); clusterIndices.push_back(tl_back);
-
-                    // sides 
-                    clusterIndices.push_back(tl_front); clusterIndices.push_back(tl_back);
-                    clusterIndices.push_back(tr_front); clusterIndices.push_back(tr_back);
-                    clusterIndices.push_back(br_front); clusterIndices.push_back(br_back);
-                    clusterIndices.push_back(bl_front); clusterIndices.push_back(bl_back);
+                    nearPoint.y += nearStepY;
+                    farPoint.y += farStepY;
                 }
             }
-        }
 
-        m_clusterVbo.setVertexData(vertices.data(), vertices.size(), GL_STATIC_DRAW);
-        m_clusterVbo.setIndexData(clusterIndices.data(), clusterIndices.size(), GL_STATIC_DRAW);
-        m_clusterVbo.enableIndices();
+            std::vector<ofIndexType> clusterIndices;
 
-        /*    gl::VboMesh::Layout clusterLayout = gl::VboMesh::Layout().usage( GL_STATIC_DRAW )
-                .attrib( geom::POSITION, 3 );
+            for (int z = 0; z < this->numClustersZ; ++z)
+            {
+                for (int y = 0; y < this->numClustersY; ++y)
+                {
+                    uint32_t z_offset = this->numPlanesX * this->numPlanesY * z;
 
-            std::vector<gl::VboMesh::Layout> clusterLayoutList;
-            clusterLayoutList.push_back( clusterLayout );
+                    for (int x = 0; x < this->numClustersX; ++x)
+                    {
+                        uint32_t y_offset = y * this->numPlanesX;
 
-            m_clusterVboMesh = gl::VboMesh::create( (uint32_t)vertices.size(), GL_LINES, clusterLayoutList, clusterIndices.size(), GL_UNSIGNED_INT );
-            m_clusterVboMesh->bufferIndices( clusterIndices.size() * sizeof( uint32_t ), clusterIndices.data() );
-            m_clusterVboMesh->bufferAttrib( geom::POSITION, vertices );
-            */
+                        uint32_t tl_front = z_offset + y_offset + x;
+                        uint32_t tr_front = tl_front + 1;
+                        uint32_t bl_front = z_offset + y_offset + this->numPlanesX + x;
+                        uint32_t br_front = bl_front + 1;
+
+                        uint32_t tl_back = tl_front + this->numPlanesX * this->numPlanesY;
+                        uint32_t tr_back = tr_front + this->numPlanesX * this->numPlanesY;
+                        uint32_t bl_back = bl_front + this->numPlanesX * this->numPlanesY;
+                        uint32_t br_back = br_front + this->numPlanesX * this->numPlanesY;
+
+                        // front face
+                        clusterIndices.push_back(tl_front); clusterIndices.push_back(tr_front);
+                        clusterIndices.push_back(tr_front); clusterIndices.push_back(br_front);
+                        clusterIndices.push_back(br_front); clusterIndices.push_back(bl_front);
+                        clusterIndices.push_back(bl_front); clusterIndices.push_back(tl_front);
+
+                        // back face
+                        clusterIndices.push_back(tl_back); clusterIndices.push_back(tr_back);
+                        clusterIndices.push_back(tr_back); clusterIndices.push_back(br_back);
+                        clusterIndices.push_back(br_back); clusterIndices.push_back(bl_back);
+                        clusterIndices.push_back(bl_back); clusterIndices.push_back(tl_back);
+
+                        // sides 
+                        clusterIndices.push_back(tl_front); clusterIndices.push_back(tl_back);
+                        clusterIndices.push_back(tr_front); clusterIndices.push_back(tr_back);
+                        clusterIndices.push_back(br_front); clusterIndices.push_back(br_back);
+                        clusterIndices.push_back(bl_front); clusterIndices.push_back(bl_back);
+                    }
+                }
+            }
+
+            this->clusterVbo.setVertexData(vertices.data(), vertices.size(), GL_STATIC_DRAW);
+            this->clusterVbo.setIndexData(clusterIndices.data(), clusterIndices.size(), GL_STATIC_DRAW);
+            this->clusterVbo.enableIndices();
+
             // Frustum lines
-        std::vector<ofVec3f> lineVertices;
-        std::vector<ofVec3f> lineColors;
+            std::vector<ofVec3f> lineVertices;
+            std::vector<ofVec3f> lineColors;
 
-        ofVec3f frustumColor(1.0f, 1.0f, 1.0f);
+            auto & frustumColor = ofVec3f(1.0f, 1.0f, 1.0f);
 
-        // sides
-        lineVertices.push_back(nearBL);
-        lineVertices.push_back(farBL);
-        lineColors.push_back(frustumColor);
-        lineColors.push_back(frustumColor);
+            // sides
+            lineVertices.push_back(nearBL);
+            lineVertices.push_back(farBL);
+            lineColors.push_back(frustumColor);
+            lineColors.push_back(frustumColor);
 
-        lineVertices.push_back(nearBR);
-        lineVertices.push_back(farBR);
-        lineColors.push_back(frustumColor);
-        lineColors.push_back(frustumColor);
+            lineVertices.push_back(nearBR);
+            lineVertices.push_back(farBR);
+            lineColors.push_back(frustumColor);
+            lineColors.push_back(frustumColor);
 
-        lineVertices.push_back(nearTL);
-        lineVertices.push_back(farTL);
-        lineColors.push_back(frustumColor);
-        lineColors.push_back(frustumColor);
+            lineVertices.push_back(nearTL);
+            lineVertices.push_back(farTL);
+            lineColors.push_back(frustumColor);
+            lineColors.push_back(frustumColor);
 
-        lineVertices.push_back(nearTR);
-        lineVertices.push_back(farTR);
-        lineColors.push_back(frustumColor);
-        lineColors.push_back(frustumColor);
+            lineVertices.push_back(nearTR);
+            lineVertices.push_back(farTR);
+            lineColors.push_back(frustumColor);
+            lineColors.push_back(frustumColor);
 
-        // near plane
-        lineVertices.push_back(nearTL);
-        lineVertices.push_back(nearTR);
-        lineColors.push_back(frustumColor);
-        lineColors.push_back(frustumColor);
+            // near plane
+            lineVertices.push_back(nearTL);
+            lineVertices.push_back(nearTR);
+            lineColors.push_back(frustumColor);
+            lineColors.push_back(frustumColor);
 
-        lineVertices.push_back(nearBL);
-        lineVertices.push_back(nearBR);
-        lineColors.push_back(frustumColor);
-        lineColors.push_back(frustumColor);
+            lineVertices.push_back(nearBL);
+            lineVertices.push_back(nearBR);
+            lineColors.push_back(frustumColor);
+            lineColors.push_back(frustumColor);
 
-        lineVertices.push_back(nearTL);
-        lineVertices.push_back(nearBL);
-        lineColors.push_back(frustumColor);
-        lineColors.push_back(frustumColor);
+            lineVertices.push_back(nearTL);
+            lineVertices.push_back(nearBL);
+            lineColors.push_back(frustumColor);
+            lineColors.push_back(frustumColor);
 
-        lineVertices.push_back(nearTR);
-        lineVertices.push_back(nearBR);
-        lineColors.push_back(frustumColor);
-        lineColors.push_back(frustumColor);
+            lineVertices.push_back(nearTR);
+            lineVertices.push_back(nearBR);
+            lineColors.push_back(frustumColor);
+            lineColors.push_back(frustumColor);
 
-        // far plane
-        lineVertices.push_back(farTL);
-        lineVertices.push_back(farTR);
-        lineColors.push_back(frustumColor);
-        lineColors.push_back(frustumColor);
+            // far plane
+            lineVertices.push_back(farTL);
+            lineVertices.push_back(farTR);
+            lineColors.push_back(frustumColor);
+            lineColors.push_back(frustumColor);
 
-        lineVertices.push_back(farBL);
-        lineVertices.push_back(farBR);
-        lineColors.push_back(frustumColor);
-        lineColors.push_back(frustumColor);
+            lineVertices.push_back(farBL);
+            lineVertices.push_back(farBR);
+            lineColors.push_back(frustumColor);
+            lineColors.push_back(frustumColor);
 
-        lineVertices.push_back(farTL);
-        lineVertices.push_back(farBL);
-        lineColors.push_back(frustumColor);
-        lineColors.push_back(frustumColor);
+            lineVertices.push_back(farTL);
+            lineVertices.push_back(farBL);
+            lineColors.push_back(frustumColor);
+            lineColors.push_back(frustumColor);
 
-        lineVertices.push_back(farTR);
-        lineVertices.push_back(farBR);
-        lineColors.push_back(frustumColor);
-        lineColors.push_back(frustumColor);
+            lineVertices.push_back(farTR);
+            lineVertices.push_back(farBR);
+            lineColors.push_back(frustumColor);
+            lineColors.push_back(frustumColor);
 
-        m_frustumVbo.setVertexData(lineVertices.data(), lineVertices.size(), GL_STATIC_DRAW);
-    }
-
-    void ClusterGridDebug::DrawFrustum(const ofCamera& _camera)
-    {
-        ofSetColor(ofFloatColor(1.0f, 1.0f, 1.0f, 1.0f));
-
-        ofPushMatrix();
-        ofMultMatrix(_camera.getModelViewMatrix().getInverse());
-        m_frustumVbo.draw(GL_LINES, 0, 24);
-        ofPopMatrix();
-    }
-
-    void ClusterGridDebug::DrawCluster(uint16_t _idx)
-    {
-        if (_idx > m_numClusters)
-        {
-            std::cout << "DrawCluster: index is out of range: " << _idx << std::endl;
-            return;
+            this->frustumVbo.setVertexData(lineVertices.data(), lineVertices.size(), GL_STATIC_DRAW);
         }
 
-        const int numIndicesPerCluster = 24;
-        int startOffset = _idx * numIndicesPerCluster;
-        m_clusterVbo.drawElements(GL_LINES, numIndicesPerCluster, startOffset);
-    }
-
-    void ClusterGridDebug::DrawCluster(const ofCamera& _camera, uint16_t _idx)
-    {
-        if (_idx > m_numClusters)
+        //--------------------------------------------------------------
+        void ClusterGridDebug::drawFrustum(const ofCamera & camera)
         {
-            std::cout << "DrawCluster: index is out of range: " << _idx << std::endl;
-            return;
-        }
+            ofSetColor(ofFloatColor(1.0f, 1.0f, 1.0f, 1.0f));
 
-        const int numIndicesPerCluster = 24;
-        int startOffset = _idx * numIndicesPerCluster;
-
-
-        m_clusterVbo.drawElements(GL_LINES, numIndicesPerCluster, startOffset);
-        ofPopMatrix();
-    }
-
-    void ClusterGridDebug::DrawCluster(const ofCamera& _camera, uint16_t _x, uint16_t _y, uint16_t _z)
-    {
-        if (_x > m_numClustersX || _x < 0) std::cout << "DrawCluster: x is out of range: " << _x << std::endl;
-        if (_y > m_numClustersY || _y < 0) std::cout << "DrawCluster: y is out of range: " << _y << std::endl;
-        if (_z > m_numClustersZ || _z < 0) std::cout << "DrawCluster: z is out of range: " << _z << std::endl;
-
-        uint16_t idx = (_z * m_numClustersX * m_numClustersY + _y * m_numClustersX + _x);
-        DrawCluster(_camera, idx);
-    }
-
-    void ClusterGridDebug::DrawOccupiedClusters(const ofCamera& _camera, const ClusterGrid& _clusterGrid)
-    {
-        static uint16_t idx = 0;
-
-        ofSetColor(ofFloatColor(1.0f, 1.0f, 1.0f, 0.3f));
-
-        ofPushMatrix();
-        ofMultMatrix(_camera.getModelViewMatrix().getInverse());
-        for (uint16_t idx = 0; idx < m_numClusters; ++idx)
-        {
-            if (_clusterGrid.m_clusterLightPointerList[idx].pointLightCount > 0)
+            ofPushMatrix();
+            ofMultMatrix(camera.getModelViewMatrix().getInverse());
             {
-                DrawCluster(idx);
+                this->frustumVbo.draw(GL_LINES, 0, 24);
             }
+            ofPopMatrix();
         }
-        ofPopMatrix();
+
+        //--------------------------------------------------------------
+        void ClusterGridDebug::drawCluster(uint16_t idx)
+        {
+            if (idx > this->numClusters)
+            {
+                ofLogWarning("ClusterGridDebug::drawCluster") << "Index is out of range: " << idx;
+                return;
+            }
+
+            const int numIndicesPerCluster = 24;
+            int startOffset = idx * numIndicesPerCluster;
+            this->clusterVbo.drawElements(GL_LINES, numIndicesPerCluster, startOffset);
+        }
+
+        //--------------------------------------------------------------
+        void ClusterGridDebug::drawCluster(const ofCamera & camera, uint16_t idx)
+        {
+            if (idx > this->numClusters)
+            {
+                ofLogWarning("ClusterGridDebug::drawCluster") << "Index is out of range: " << idx;
+                return;
+            }
+
+            ofPushMatrix();
+            ofMultMatrix(camera.getModelViewMatrix().getInverse());
+            {
+                const int numIndicesPerCluster = 24;
+                int startOffset = idx * numIndicesPerCluster;
+                this->clusterVbo.drawElements(GL_LINES, numIndicesPerCluster, startOffset);
+            }
+            ofPopMatrix();
+        }
+
+        //--------------------------------------------------------------
+        void ClusterGridDebug::drawCluster(const ofCamera & camera, uint16_t x, uint16_t y, uint16_t z)
+        {
+            if (x > this->numClustersX || x < 0) ofLogWarning("ClusterGridDebug::drawCluster") << "x is out of range: " << x;
+            if (y > this->numClustersY || y < 0) ofLogWarning("ClusterGridDebug::drawCluster") << "y is out of range: " << y;
+            if (z > this->numClustersZ || z < 0) ofLogWarning("ClusterGridDebug::drawCluster") << "z is out of range: " << z;
+
+            uint16_t idx = (z * this->numClustersX * this->numClustersY + y * this->numClustersX + x);
+            this->drawCluster(camera, idx);
+        }
+
+        //--------------------------------------------------------------
+        void ClusterGridDebug::drawOccupiedClusters(const ofCamera & camera, const ClusterGrid & clusterGrid)
+        {
+            static uint16_t idx = 0;
+
+            ofSetColor(ofFloatColor(1.0f, 1.0f, 1.0f, 0.3f));
+
+            ofPushMatrix();
+            ofMultMatrix(camera.getModelViewMatrix().getInverse());
+            for (uint16_t idx = 0; idx < this->numClusters; ++idx)
+            {
+                if (clusterGrid.clusterLightPointerList[idx].pointLightCount > 0)
+                {
+                    this->drawCluster(idx);
+                }
+            }
+            ofPopMatrix();
+        }
     }
 }
 

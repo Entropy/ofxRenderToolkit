@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "glm/glm.hpp"
 
 #include "PointLight.h"
 #include "ProjInfo.h"
@@ -10,103 +9,106 @@
 
 namespace ofxRenderToolkit
 {
-    // R32G32_UINT
-    struct ClusterLightPointer
+    namespace lighting
     {
-        uint32_t indexOffset;
-        uint32_t pointLightCount;
-    };
+        // R32G32_UINT
+        struct ClusterLightPointer
+        {
+            uint32_t indexOffset;
+            uint32_t pointLightCount;
+        }; 
+        
+        class ClusterGrid
+        {
+        public:
+            static const int NUM_PLANES_X = 21;
+            static const int NUM_PLANES_Y = 12;
+            static const int NUM_PLANES_Z = 17;
 
-    class ClusterGrid
-    {
-    public:
-        static const int NUM_PLANES_X = 21;
-        static const int NUM_PLANES_Y = 12;
-        static const int NUM_PLANES_Z = 17;
+            static const int NUM_CLUSTERS_X = NUM_PLANES_X - 1;
+            static const int NUM_CLUSTERS_Y = NUM_PLANES_Y - 1;
+            static const int NUM_CLUSTERS_Z = NUM_PLANES_Z - 1;
 
-        static const int NUM_CLUSTERS_X = NUM_PLANES_X - 1;
-        static const int NUM_CLUSTERS_Y = NUM_PLANES_Y - 1;
-        static const int NUM_CLUSTERS_Z = NUM_PLANES_Z - 1;
+            static const uint16_t NUM_CLUSTERS = NUM_CLUSTERS_X * NUM_CLUSTERS_Y * NUM_CLUSTERS_Z;
+            static const uint16_t MAX_CLUSTERED_LIGHTS = 0xffff;  // 65535 max clustered lights 
 
-        static const uint16_t NUM_CLUSTERS = NUM_CLUSTERS_X * NUM_CLUSTERS_Y * NUM_CLUSTERS_Z;
-        static const uint16_t MAX_CLUSTERED_LIGHTS = 0xffff;  // 65535 max clustered lights 
+            static const uint16_t CLUSTER_INDEX_MASK = 0x0fff; // (0111111111111111) 15 bit mask (0-4096 clusters) 
+            static const uint16_t LIGHT_TYPE_MASK = 0xf000; // (1000000000000000) 1 bit mask (point light or spot light) 
+            static const uint8_t POINT_LIGHT_TYPE_VALUE = 0;
+            static const uint8_t SPOT_LIGHT_TYPE_VALUE = 1;
 
-        static const uint16_t CLUSTER_INDEX_MASK = 0x0fff; // (0111111111111111) 15 bit mask (0-4096 clusters) 
-        static const uint16_t LIGHT_TYPE_MASK = 0xf000; // (1000000000000000) 1 bit mask (point light or spot light) 
-        static const uint8_t  POINT_LIGHT_TYPE_VALUE = 0;
-        static const uint8_t  SPOT_LIGHT_TYPE_VALUE = 1;
+            static const uint32_t MAX_POINT_LIGHTS = 1024;
 
-        static const uint32_t MAX_POINT_LIGHTS = 1024;
+        public:
+            ClusterGrid();
+            ~ClusterGrid();
 
-    public:
-        ClusterGrid();
-        ~ClusterGrid();
+            void setup(const ProjInfo & projInfo);
 
-        void Init(const ProjInfo& _projInfo);
+            void cullPointLights(const ofMatrix4x4 & viewMatrix, const std::vector<PointLight> & pointLights);
 
-        void CullPointLights(const ofMatrix4x4& _viewMatrix, const std::vector<PointLight>& _pointLights);
+            void sortLightIndexList();
 
-        void SortLightIndexList();
+            void updateLightIndexTextures();
+            void bindLightIndexTextures(GLuint indexTexUnit, GLuint pointerTableTexUnit);
+            void unbindLightIndexTextures(GLuint indexTexUnit, GLuint pointerTableTexUnit);
 
-        void UpdateLightIndexTextures();
-        void BindLightIndexTextures(GLuint _indexTexUnit, GLuint _pointerTableTexUnit);
-        void UnbindLightIndexTextures(GLuint _indexTexUnit, GLuint _pointerTableTexUnit);
+            int getNumPlanesX() const;
+            int getNumPlanesY() const;
+            int getNumPlanesZ() const;
+                
+            int getNumClustersX() const;
+            int getNumClustersY() const;
+            int getNumClustersZ() const;
+            int getNumClusters()  const;
 
-        inline int GetNumPlanesX() const { return NUM_PLANES_X; };
-        inline int GetNumPlanesY() const { return NUM_PLANES_Y; };
-        inline int GetNumPlanesZ() const { return NUM_PLANES_Z; };
+            uint16_t getNumVisibleLights() const;
+                     
+            uint32_t getNumPointLightIndices() const;
+            const uint16_t * getPointLightIndices() const;
+                             
+            uint32_t getNumCulledPointLights() const;
+            const uint16_t * getCulledPointLightIndices() const;
+                                
+            uint32_t getNumAffectedClusters() const;
 
-        inline int GetNumClustersX() const { return NUM_CLUSTERS_X; };
-        inline int GetNumClustersY() const { return NUM_CLUSTERS_Y; };
-        inline int GetNumClustersZ() const { return NUM_CLUSTERS_Z; };
-        inline int GetNumClusters()  const { return NUM_CLUSTERS; };
+        private:
+            void createLightIndexTextures();
+            void createPlanes();
 
-        uint16_t            GetNumVisibleLights() const;
+            void addPointLightToCluster(uint16_t idx, int x, int y, int z);
 
-        uint32_t            GetNumPointLightIndices() const;
-        const uint16_t *    GetPointLightIndices() const;
+            ProjInfo projInfo;
 
-        uint32_t            GetNumCulledPointLights() const;
-        const uint16_t *    GetCulledPointLightIndices() const;
+            util::Plane * planesX;
+            util::Plane * planesY;
+            util::Plane * planesZ;
 
-        uint32_t            GetNumAffectedClusters() const;
+            util::Plane nearPlane;
+            util::Plane farPlane;
 
-    private:
-        void CreatePlanes();
-        void CreateLightIndexTextures();
+            util::Plane frustumPlanes[6];
 
-        void AddPointLightToCluster(uint16_t light_idx, int x, int y, int z);
+        public:
+            GLuint lightIndexTbo;
+            GLuint lightIndexTex;
+            GLuint lightPointerTableTex3d;
 
-        ProjInfo    m_projInfo;
+            uint16_t lightIndices[MAX_CLUSTERED_LIGHTS]; // unsorted list of light indices (just light IDs)
+            uint16_t lightSortKeys[MAX_CLUSTERED_LIGHTS]; // list of light keys (cluster ID and light type encoded in 16 bits)
 
-        Plane *                     m_planesX;
-        Plane * 	                m_planesY;
-        Plane * 	                m_planesZ;
+            uint16_t tempLightIndices[MAX_CLUSTERED_LIGHTS]; // temp list for radix sort
+            uint16_t tempLightSortKeys[MAX_CLUSTERED_LIGHTS]; // temp list for radix sort
 
-        Plane   	                m_nearPlane;
-        Plane   	                m_farPlane;
+            ClusterLightPointer clusterLightPointerList[NUM_CLUSTERS]; // data for 3d texture (cluster's light index offset and light counts)
 
-        Plane                       m_frustumPlanes[6];
+            uint32_t numLightIndices;
+            uint32_t numAffectedClusters;
 
-    public:
-        GLuint                      m_lightIndexTbo;
-        GLuint                      m_lightIndexTex;
-        GLuint                      m_lightPointerTableTex3d;
+            uint16_t culledPointLightIndices[MAX_POINT_LIGHTS]; // unsorted list of light indices (just light IDs)
+            uint32_t numCulledLightIndices;
 
-        uint16_t                    m_lightIndices[MAX_CLUSTERED_LIGHTS]; // unsorted list of light indices (just light IDs)
-        uint16_t                    m_lightSortKeys[MAX_CLUSTERED_LIGHTS]; // list of light keys (cluster ID and light type encoded in 16 bits)
-
-        uint16_t                    m_tempLightIndices[MAX_CLUSTERED_LIGHTS]; // temp list for radix sort
-        uint16_t                    m_tempLightSortKeys[MAX_CLUSTERED_LIGHTS]; // temp list for radix sort
-
-        ClusterLightPointer         m_clusterLightPointerList[NUM_CLUSTERS]; // data for 3d texture (cluster's light index offset and light counts)
-
-        uint32_t                    m_numLightIndices;
-        uint32_t                    m_numAffectedClusters;
-
-        uint16_t                   m_culledPointLightIndices[MAX_POINT_LIGHTS]; // unsorted list of light indices (just light IDs)
-        uint32_t                   m_numCulledLightIndices;
-
-        int                        m_numVisibleLights;
-    };
+            int numVisibleLights;
+        };
+    }
 }

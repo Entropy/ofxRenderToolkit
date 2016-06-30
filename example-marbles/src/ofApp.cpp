@@ -38,8 +38,10 @@ void ofApp::setup()
     this->viewUbo.configureShader(m_shader);
     this->viewUbo.configureShader(m_skyboxShader);
 
-    // Set up lighting
-    setupLighting();
+    // Set up lighting.
+    this->lightingSystem.setup(m_camera);
+    this->lightingSystem.configureShader(m_shader);
+    this->lightingSystem.setAmbientIntensity(0.5f);
 
     m_sphere = ofSpherePrimitive( 1.0f, 24 );
 
@@ -59,18 +61,12 @@ void ofApp::setup()
     m_irradianceMap.loadDDSTexture( "textures/output_iem.dds" );
     m_radianceMap.loadDDSTexture( "textures/output_pmrem.dds" );
 
-    setAppMode( AppMode::NORMAL_VIEW );
+    this->debug = false;
 
     glEnable( GL_TEXTURE_CUBE_MAP_SEAMLESS );
 }
 
-void ofApp::setupLighting()
-{  
-    m_lightSystem.setup( m_camera );
-    m_lightSystem.configureShader( m_shader );
-    m_lightSystem.setAmbientIntensity( 0.5f );
-}
-
+//--------------------------------------------------------------
 void ofApp::createRandomLights()
 {
     // create some random lights
@@ -79,119 +75,113 @@ void ofApp::createRandomLights()
 
     int numPointLights = 60;
 
-    m_lightSystem.clearPointLights();
+    this->lightingSystem.clearPointLights();
 
-    for ( int i = 0; i < numPointLights; ++i )
+    for (int i = 0; i < numPointLights; ++i)
     {
-        glm::vec3 offset = vec3( ofRandom( -positionDist, positionDist ), 0.0f, ofRandom( -positionDist, positionDist ) );
-        ofxRTK::PointLight l( offset, vec3( 1.0f, 1.0f, 1.0f ), radius, 6000.0f );
-        l.color = vec3( glm::normalize( vec3( ofRandom( 0.0f, 1.0f ), ofRandom( 0.0f, 1.0f ), ofRandom( 0.0f, 1.0f ) ) ) );
-        m_lightSystem.addPointLight( l );
+        auto & offset = ofVec3f(ofRandom(-positionDist, positionDist), 0.0f, ofRandom(-positionDist, positionDist));
+        auto & light = ofxRTK::lighting::PointLight(offset, ofVec3f(1.0f, 1.0f, 1.0f), radius, 6000.0f);
+        light.color = ofVec3f(ofRandom(0.0f, 1.0f), ofRandom(0.0f, 1.0f), ofRandom(0.0f, 1.0f)).getNormalized();
+        this->lightingSystem.addPointLight(light);
     }
 }
 
+//--------------------------------------------------------------
 void ofApp::animateLights()
 {
-    std::vector<ofxRTK::PointLight>& pointLights = m_lightSystem.getPointLights();
-    for ( int idx = 0; idx < pointLights.size(); ++idx )
+    auto & pointLights = this->lightingSystem.getPointLights();
+    for (int idx = 0; idx < pointLights.size(); ++idx)
     {
-        ofxRTK::PointLight& light = pointLights[ idx ];
-        light.position.y = ( sinf( ( ofGetElapsedTimeMillis() + idx * 40 ) / 1400.0f ) * 0.5f + 0.5f ) * 100.0f; 
+        auto & light = pointLights[idx];
+        light.position.y = (sinf((ofGetElapsedTimeMillis() + idx * 40) / 1400.0f) * 0.5f + 0.5f) * 100.0f;
     }
 }
 
-void ofApp::setAppMode( const AppMode _mode )
+//--------------------------------------------------------------
+void ofApp::setDebug(bool debug)
 {
-    switch ( _mode )
+    if (debug)
     {
-        case AppMode::NORMAL_VIEW:
-        {
-            m_camera.enableMouseInput();
-            m_debugCamera.disableMouseInput();
-        }
-        break;
-
-        case AppMode::DEBUG_VIEW:
-        {
-            m_camera.disableMouseInput();
-            m_debugCamera.enableMouseInput();
-        }
+        m_camera.disableMouseInput();
+        m_debugCamera.enableMouseInput();
+    }
+    else
+    {
+        m_camera.enableMouseInput();
+        m_debugCamera.disableMouseInput();
     }
 
-    m_appMode = _mode;
+    this->debug = debug;
 }
 
+//--------------------------------------------------------------
 void ofApp::imGui()
 {
     m_gui.begin();
     {
-        ImGui::Text( "Material Properties" );
-        ImGui::ColorEdit4( "Base Color", (float*)&m_material.baseColor );
-        ImGui::SliderFloat( "Emissive Intensity", &m_material.emissiveIntensity, 0.0f, 1.0f );
-        ImGui::ColorEdit4( "Emissive Color", (float*)&m_material.emissiveColor );
+        ImGui::Text("Material Properties");
+        ImGui::ColorEdit4("Base Color", (float*)&m_material.baseColor);
+        ImGui::SliderFloat("Emissive Intensity", &m_material.emissiveIntensity, 0.0f, 1.0f);
+        ImGui::ColorEdit4("Emissive Color", (float*)&m_material.emissiveColor);
 
         ImGui::Separator();
-        ImGui::Text( "Camera Settings" );
-        ImGui::SliderFloat( "Exposure", &m_exposure, 0.01f, 10.0f );
-        ImGui::SliderFloat( "Gamma", &m_gamma, 0.01f, 10.0f );
+        ImGui::Text("Camera Settings");
+        ImGui::SliderFloat("Exposure", &m_exposure, 0.01f, 10.0f);
+        ImGui::SliderFloat("Gamma", &m_gamma, 0.01f, 10.0f);
 
         ImGui::BeginGroup();
-        ImGui::Text( "Stats" );
-        ImGui::Text( "Visible Lights: %u", m_lightSystem.getNumVisibleLights() );
-        ImGui::Text( "Culled Lights: %u", m_lightSystem.getNumCulledPointLights() );
-        ImGui::Text( "Num Affected Clusters: %u", m_lightSystem.getNumAffectedClusters() );
-        ImGui::Text( "Num Light Indices: %u", m_lightSystem.getNumPointLightIndices() );
-        ImGui::Text( "Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate );
+        ImGui::Text("Stats");
+        ImGui::Text("Visible Lights: %u", this->lightingSystem.getNumVisibleLights());
+        ImGui::Text("Culled Lights: %u", this->lightingSystem.getNumCulledPointLights());
+        ImGui::Text("Num Affected Clusters: %u", this->lightingSystem.getNumAffectedClusters());
+        ImGui::Text("Num Light Indices: %u", this->lightingSystem.getNumPointLightIndices());
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::EndGroup();
 
         ImGui::Separator();
-        ImGui::Text( "Lights" );
+        ImGui::Text("Lights");
 
-        ImGui::SliderFloat( "Ambient IBL Strength", &m_lightSystem.m_ambientIntensity, 0.0f, 3.0f );
+        ImGui::SliderFloat("Ambient IBL Strength", &this->lightingSystem.ambientIntensity, 0.0f, 3.0f);
 
-        if ( ImGui::Button( "Create Point Lights" ) )
+        if (ImGui::Button("Create Point Lights"))
         {
             createRandomLights();
         }
 
         ImGui::SameLine();
 
-        if ( ImGui::Button( "Clear Point Lights" ) )
+        if (ImGui::Button("Clear Point Lights"))
         {
-            m_lightSystem.clearPointLights();
+            this->lightingSystem.clearPointLights();
         }
 
-
-        if ( ImGui::Button( "Add Dir Light" ) )
+        if (ImGui::Button("Add Dir Light"))
         {
-            m_lightSystem.clearDirectionalLights();
-
-            ofxRTK::DirectionalLight dirLight1;
-            dirLight1.color = glm::vec3( 1.0f, 1.0f, 1.0f );
-            dirLight1.direction = glm::normalize( glm::vec3( 1.0f, -1.0f, 0.0f ) );
-            dirLight1.intensity = 1.0f;
-
-            m_lightSystem.addDirectionalLight( dirLight1 );
+            this->lightingSystem.clearDirectionalLights();
+            auto & light = ofxRTK::lighting::DirectionalLight(ofVec3f(1.0f, -1.0f, 0.0f).getNormalized(), ofVec3f(1.0f, 1.0f, 1.0f), 1.0f);
+            this->lightingSystem.addDirectionalLight(light);
         }
 
         ImGui::SameLine();
 
-        if ( ImGui::Button( "Clear Dir Light" ) )
+        if (ImGui::Button("Clear Dir Light"))
         {
-            m_lightSystem.clearDirectionalLights();
+            this->lightingSystem.clearDirectionalLights();
         }
 
-        std::vector<ofxRTK::DirectionalLight>& dirLights = m_lightSystem.getDirectionalLights();
-        if ( dirLights.size() != 0 )
+        auto & dirLights = this->lightingSystem.getDirectionalLights();
+        if (!dirLights.empty())
         {
-            ImGui::ColorEdit3( "Color", (float *)&dirLights.at(0).color );
-            ImGui::SliderFloat3( "Direction", (float *)&dirLights.at(0).direction, -1.0f, 1.0f );
-            ImGui::SliderFloat( "Intensity", &dirLights.at(0).intensity, 0.0f, 15.0f );
+            auto & light = dirLights.front();
+            ImGui::ColorEdit3("Color", (float *)&light.color);
+            ImGui::SliderFloat3("Direction", (float *)&light.direction, -1.0f, 1.0f);
+            ImGui::SliderFloat("Intensity", &light.intensity, 0.0f, 15.0f);
         }
     }
     m_gui.end();
 }
 
+//--------------------------------------------------------------
 void ofApp::drawSkybox()
 {
     glDisable( GL_CULL_FACE );
@@ -211,11 +201,13 @@ void ofApp::drawSkybox()
     glEnable( GL_CULL_FACE );
 }
 
+//--------------------------------------------------------------
 void ofApp::drawScene()
 {
     drawSphereGrid();
  }
 
+//--------------------------------------------------------------
 void ofApp::drawSphereGrid()
 {
     glCullFace( GL_FRONT );
@@ -254,11 +246,11 @@ void ofApp::update()
 {
     animateLights();
 
-    if ( m_bMouseOverGui ) 
+    if (m_bMouseOverGui)
     {
         m_camera.disableMouseInput();
     }
-    else 
+    else
     {
         m_camera.enableMouseInput();
     }
@@ -269,82 +261,75 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-    glEnable( GL_CULL_FACE );
-    glCullFace( GL_FRONT );
-
-    ofClear( ofFloatColor( 0.0f, 0.0f, 0.0f, 1.0f ) );
+    ofClear(0.0f, 1.0f);
+ 
     ofDisableAlphaBlending();
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
 
     this->viewUbo.bind();
     {
-
         m_skyboxMap.bindTexture(14);
         m_irradianceMap.bindTexture(2);
         m_radianceMap.bindTexture(3);
 
-        switch (m_appMode)
+        if (this->debug)
         {
-        case AppMode::NORMAL_VIEW:
+            m_debugCamera.begin();
+            {
+                this->viewUbo.update(m_camera);
+                this->lightingSystem.update(m_camera);
+
+                ofSetColor(255, 255, 255, 255);
+                this->lightingSystem.debugDrawFrustum(m_camera);
+
+                this->lightingSystem.debugDrawCulledPointLights();
+                this->lightingSystem.debugDrawClusteredPointLights();
+                this->lightingSystem.debugDrawOccupiedClusters(m_camera);
+            }
+            m_debugCamera.end();
+        }
+        else
         {
             m_camera.begin();
             {
                 this->viewUbo.update(m_camera);
-                m_lightSystem.update(m_camera);
+                this->lightingSystem.update(m_camera);
 
                 ofSetColor(255, 255, 255, 255);
 
                 drawSkybox();
 
-                m_lightSystem.begin();
-                m_shader.begin();
-                m_material.setUniforms(m_shader);
-                m_shader.setUniform1f("uExposure", m_exposure);
-                m_shader.setUniform1f("uGamma", m_gamma);
-                m_shader.setUniform1i("uIrradianceMap", 2);
-                m_shader.setUniform1i("uRadianceMap", 3);
-                drawScene();
-                m_shader.end();
-                m_lightSystem.end();
+                this->lightingSystem.begin();
+                {
+                    m_shader.begin();
+                    m_material.setUniforms(m_shader);
+                    m_shader.setUniform1f("uExposure", m_exposure);
+                    m_shader.setUniform1f("uGamma", m_gamma);
+                    m_shader.setUniform1i("uIrradianceMap", 2);
+                    m_shader.setUniform1i("uRadianceMap", 3);
+                    {
+                        drawScene();
+                    }
+                    m_shader.end();
+                }
+                this->lightingSystem.end();
             }
             m_camera.end();
-
-            imGui();
-        }
-        break;
-
-        case AppMode::DEBUG_VIEW:
-        {
-            m_debugCamera.begin();
-            {
-                this->viewUbo.update(m_camera);
-                m_lightSystem.update(m_camera);
-
-                ofSetColor(255, 255, 255, 255);
-                m_lightSystem.debugDrawFrustum(m_camera);
-
-                m_lightSystem.debugDrawCulledPointLights();
-                m_lightSystem.debugDrawClusteredPointLights();
-                m_lightSystem.debugDrawOccupiedClusters(m_camera);
-            }
-            m_debugCamera.end();
-        }
-        break;
         }
     }
     this->viewUbo.unbind();
+
+    this->imGui();
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key){
-    switch ( key )
+void ofApp::keyPressed(int key)
+{
+    if (key == ' ')
     {
-        case '1':
-            setAppMode( AppMode::NORMAL_VIEW );
-        break;
-
-        case '2':
-            setAppMode( AppMode::DEBUG_VIEW );
-        break;
+        this->debug ^= 1;
     }
 }
 

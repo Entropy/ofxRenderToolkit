@@ -1,34 +1,40 @@
 #pragma once
 
-#include "glm/glm.hpp"
+#include "ofMain.h"
 
 namespace ofxRenderToolkit
 {
-    struct DirectionalLight
+    namespace lighting
     {
-        DirectionalLight() 
-            : direction(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f))
-            , zero(0.0f)
-            , color(glm::vec3(1.0f, 1.0f, 1.0f))
-            , intensity(1000.0f)
-        {};
+        struct DirectionalLight
+        {
+        public:
+            //--------------------------------------------------------------
+            DirectionalLight()
+                : direction(1.0f, 0.0f, 0.0f)
+                , padding(0.0f)
+                , color(1.0f, 1.0f, 1.0f)
+                , intensity(1000.0f)
+            {};
 
-        DirectionalLight( const glm::vec3& _direction, const glm::vec3& _color, float _intensity )
-            : direction( _direction )
-            , zero( 0.0f )
-            , color( _color )
-            , intensity( _intensity )
-        {}
+            //--------------------------------------------------------------
+            DirectionalLight(const ofVec3f & direction, const ofVec3f & color, float intensity)
+                : direction(direction)
+                , padding(0.0f)
+                , color(color)
+                , intensity(intensity)
+            {}
 
-    public:
-        glm::vec3   direction;
+        public:
+            ofVec3f direction;
 
-    private:
-        float       zero; // .w = 0 for point lights
+        private:
+            float padding; // .w = 0 for point lights
 
-    public:
-        glm::vec3   color;
-        float       intensity;
-    };
+        public:
+            ofVec3f color;
+            float  intensity;
+        };
+    }
 }
 

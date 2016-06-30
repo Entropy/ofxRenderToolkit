@@ -25,15 +25,6 @@
     <ClCompile Include="..\libs\glm\detail\glm.cpp">
       <Filter>addons\ofxRenderToolkit\libs\glm\detail</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Lighting\ClusterGrid.cpp">
-      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Lighting\ClusterGridDebug.cpp">
-      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Lighting\LightSystem.cpp">
-      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\PBR\CubeMapTexture.cpp">
       <Filter>addons\ofxRenderToolkit\src\pbr</Filter>
     </ClCompile>
@@ -44,6 +35,18 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\util\ViewUbo.cpp">
+      <Filter>addons\ofxRenderToolkit\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lighting\ClusterGrid.cpp">
+      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lighting\ClusterGridDebug.cpp">
+      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lighting\System.cpp">
+      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\util\Plane.cpp">
       <Filter>addons\ofxRenderToolkit\src\util</Filter>
     </ClCompile>
   </ItemGroup>
@@ -666,29 +669,11 @@
     <ClInclude Include="..\libs\glm\gtx\wrap.hpp">
       <Filter>addons\ofxRenderToolkit\libs\glm\gtx</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Lighting\ClusterGrid.h">
-      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Lighting\ClusterGridDebug.h">
-      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Lighting\DirectionalLight.h">
-      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Lighting\LightSystem.h">
-      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Lighting\PointLight.h">
-      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\PBR\CubeMapTexture.h">
       <Filter>addons\ofxRenderToolkit\src\pbr</Filter>
     </ClInclude>
     <ClInclude Include="..\src\PBR\Material.h">
       <Filter>addons\ofxRenderToolkit\src\pbr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\lighting\ProjInfo.h">
-      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
     </ClInclude>
     <ClInclude Include="..\src\util\GLError.h">
       <Filter>addons\ofxRenderToolkit\src\util</Filter>
@@ -708,9 +693,6 @@
     <ClInclude Include="..\src\util\CameraTools.h">
       <Filter>addons\ofxRenderToolkit\src\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\util\Frustum.h">
-      <Filter>addons\ofxRenderToolkit\src\util</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\ofxRenderToolkit.h">
       <Filter>addons\ofxRenderToolkit\src</Filter>
     </ClInclude>
@@ -718,6 +700,27 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\util\ViewUbo.h">
+      <Filter>addons\ofxRenderToolkit\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lighting\ClusterGrid.h">
+      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lighting\ClusterGridDebug.h">
+      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lighting\DirectionalLight.h">
+      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lighting\PointLight.h">
+      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lighting\ProjInfo.h">
+      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lighting\System.h">
+      <Filter>addons\ofxRenderToolkit\src\lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\FrustumTools.h">
       <Filter>addons\ofxRenderToolkit\src\util</Filter>
     </ClInclude>
   </ItemGroup>
@@ -784,9 +787,6 @@
     <Filter Include="addons\ofxRenderToolkit\src\pbr">
       <UniqueIdentifier>{eb3ee06d-4f17-4c30-acae-da99b7b18df5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="addons\ofxRenderToolkit\src\lighting">
-      <UniqueIdentifier>{f17ee196-1303-4ccd-b9ff-7e3857726784}</UniqueIdentifier>
-    </Filter>
     <Filter Include="addons\ofxRenderToolkit\src\util">
       <UniqueIdentifier>{0210fdcb-f0f5-4ab9-8e62-0e2dd06dd685}</UniqueIdentifier>
     </Filter>
@@ -819,6 +819,9 @@
     </Filter>
     <Filter Include="shaders\inc">
       <UniqueIdentifier>{cb078d88-073b-4bcd-8079-156768ce02bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxRenderToolkit\src\lighting">
+      <UniqueIdentifier>{f17ee196-1303-4ccd-b9ff-7e3857726784}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

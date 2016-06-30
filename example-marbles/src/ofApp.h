@@ -6,24 +6,16 @@
 
 class ofApp : public ofBaseApp
 {
-    enum class AppMode
-    {
-        NORMAL_VIEW = 0,
-        DEBUG_VIEW = 1
-    };
-
 public:
     void setup();
     void update();
     void draw();
 
-    void setupLighting();
-
     void createRandomLights();
 
     void animateLights();
 
-    void setAppMode(const AppMode _mode);
+    void setDebug(bool debug);
 
     void drawSkybox();
     void drawScene();
@@ -44,10 +36,10 @@ public:
     void gotMessage(ofMessage msg);
 
 private:
-    AppMode                     m_appMode;
+    bool debug;
 
     ofxRTK::util::ViewUbo       viewUbo;
-    ofxRTK::LightSystem         m_lightSystem;
+    ofxRTK::lighting::System    lightingSystem;
 
     ofxRTK::CubeMapTexture      m_radianceMap;
     ofxRTK::CubeMapTexture      m_irradianceMap;

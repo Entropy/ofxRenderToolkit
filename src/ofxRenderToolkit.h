@@ -2,7 +2,7 @@
 
 #define ofxRTK ofxRenderToolkit
 
-#include "lighting/LightSystem.h"
+#include "lighting/System.h"
 #include "lighting/PointLight.h"
 
 #include "pbr/CubeMapTexture.h"

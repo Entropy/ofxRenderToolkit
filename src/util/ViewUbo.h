@@ -31,7 +31,7 @@ namespace ofxRenderToolkit
                 float farClip;
 
             private:
-                float dummy[2];
+                float padding[2];
             } data;
 
             ofBufferObject ubo;

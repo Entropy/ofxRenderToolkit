@@ -2,42 +2,45 @@
 
 #include "ofMain.h"
 
-#define CheckGLError() _check_gl_error(__FILE__, __LINE__)
+#define CheckGLError() ofxRenderToolkit::util::_check_gl_error(__FILE__, __LINE__)
 
 namespace ofxRenderToolkit
 {
-    static void _check_gl_error(const char * _file, int _line)
+    namespace util
     {
-        GLenum err = glGetError();
-
-        while (err != GL_NO_ERROR)
+        static void _check_gl_error(const char * _file, int _line)
         {
-            std::string error;
+            GLenum err = glGetError();
 
-            switch (err) {
-            case GL_INVALID_OPERATION:      
-                error = "INVALID_OPERATION";      
-                break;
+            while (err != GL_NO_ERROR)
+            {
+                std::string error;
 
-            case GL_INVALID_ENUM:           
-                error = "INVALID_ENUM";           
-                break;
+                switch (err) {
+                case GL_INVALID_OPERATION:
+                    error = "INVALID_OPERATION";
+                    break;
 
-            case GL_INVALID_VALUE:         
-                error = "INVALID_VALUE";          
-                break;
-            case GL_OUT_OF_MEMORY:         
-                error = "OUT_OF_MEMORY";     
-                break;
+                case GL_INVALID_ENUM:
+                    error = "INVALID_ENUM";
+                    break;
 
-            case GL_INVALID_FRAMEBUFFER_OPERATION:  
-                error = "INVALID_FRAMEBUFFER_OPERATION"; 
-                break;
+                case GL_INVALID_VALUE:
+                    error = "INVALID_VALUE";
+                    break;
+                case GL_OUT_OF_MEMORY:
+                    error = "OUT_OF_MEMORY";
+                    break;
+
+                case GL_INVALID_FRAMEBUFFER_OPERATION:
+                    error = "INVALID_FRAMEBUFFER_OPERATION";
+                    break;
+                }
+
+                ofLogError("ofxRender") << "GL_" << error.c_str() << " - " << err << ", " << _file << ":" << _line;
+                //  ofExit( 0 );
+                err = glGetError();
             }
-
-            ofLogError("ofxRender") << "GL_" << error.c_str() << " - " << err << ", " << _file << ":" << _line;
-            //  ofExit( 0 );
-            err = glGetError();
         }
     }
 }
