@@ -188,7 +188,7 @@ void ofApp::drawSkybox()
     this->skyboxShader.setUniform1f("uGamma", this->gamma);
     this->skyboxShader.setUniform1i("uCubeMap", 3);
     {
-        // draw full-screen quad
+        // Draw full-screen quad.
         glBindVertexArray(this->defaultVao);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
