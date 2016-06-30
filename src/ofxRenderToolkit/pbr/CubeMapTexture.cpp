@@ -1,7 +1,7 @@
 #include "gli/gli.hpp"
 
 #include "CubeMapTexture.h"
-#include "util/GLError.h"
+#include "ofxRenderToolkit/util/GLError.h"
 
 namespace ofxRenderToolkit
 {

@@ -1,13 +1,11 @@
 #include "ClusterGrid.h"
 
-#include "util/Plane.h"
-#include "util/FrustumTools.h"
-#include "util/MatrixTools.h"
-#include "util/SphereScissor.h"
-#include "util/RadixSort.h"
-#include "util/GLError.h"
-
-#include "glm/gtc/type_ptr.hpp"
+#include "ofxRenderToolkit/util/Plane.h"
+#include "ofxRenderToolkit/util/FrustumTools.h"
+#include "ofxRenderToolkit/util/MatrixTools.h"
+#include "ofxRenderToolkit/util/SphereScissor.h"
+#include "ofxRenderToolkit/util/RadixSort.h"
+#include "ofxRenderToolkit/util/GLError.h"
 
 namespace ofxRenderToolkit
 {

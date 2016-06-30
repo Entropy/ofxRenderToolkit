@@ -2,12 +2,12 @@
 
 #define ofxRTK ofxRenderToolkit
 
-#include "lighting/System.h"
-#include "lighting/PointLight.h"
+#include "ofxRenderToolkit/lighting/System.h"
+#include "ofxRenderToolkit/lighting/PointLight.h"
 
-#include "pbr/CubeMapTexture.h"
-#include "pbr/Material.h"
+#include "ofxRenderToolkit/pbr/CubeMapTexture.h"
+#include "ofxRenderToolkit/pbr/Material.h"
 
-#include "util/MatrixTools.h"
-#include "util/CameraTools.h"
-#include "util/ViewUbo.h"
+#include "ofxRenderToolkit/util/MatrixTools.h"
+#include "ofxRenderToolkit/util/CameraTools.h"
+#include "ofxRenderToolkit/util/ViewUbo.h"

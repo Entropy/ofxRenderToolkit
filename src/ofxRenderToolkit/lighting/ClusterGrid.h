@@ -5,7 +5,7 @@
 #include "PointLight.h"
 #include "ProjInfo.h"
 
-#include "util/Plane.h"
+#include "ofxRenderToolkit/util/Plane.h"
 
 namespace ofxRenderToolkit
 {
