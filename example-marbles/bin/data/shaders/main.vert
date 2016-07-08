@@ -15,7 +15,7 @@
 
 #pragma include <inc/viewData.glsl>
 
-uniform mat3 normalMatrix;
+uniform mat4 uNormalMatrix;
 
 out vec4 vVertex;
 out vec3 vNormal;
@@ -29,14 +29,14 @@ out vec3 vNormal_ws;
 void main( void )
 {
     vVertex = modelViewMatrix * position; // calculate view space position (required for lighting)
-    vNormal = normalize(normalMatrix * normal); // calculate view space normal (required for lighting & normal mapping)
+	vNormal = normalize((uNormalMatrix * vec4(normal, 0.0)).xyz); // calculate view space normal (required for lighting & normal mapping)
     vTexCoord0 = texcoord; // pass texture coordinates
 
     // Cube map vectors
-    vec4 eyeDir_vs = vVertex - vec4( 0.0, 0.0, 0.0, 1.0 );
-    vVertex_ws = ( viewData.inverseViewMatrix * vVertex).xyz;
-    vEyeDir_ws = vec3( viewData.inverseViewMatrix * eyeDir_vs );
-    vNormal_ws = vec3( viewData.inverseViewMatrix * vec4( vNormal, 0.0 ) );
+    vec4 eyeDir_vs = vVertex - vec4( 0.0, 0.0, 0.0, 1.0);
+    vVertex_ws = (viewData.inverseViewMatrix * vVertex).xyz;
+    vEyeDir_ws = vec3(viewData.inverseViewMatrix * eyeDir_vs);
+    vNormal_ws = vec3(viewData.inverseViewMatrix * vec4( vNormal, 0.0));
 
     gl_Position = projectionMatrix * vVertex;
 }

@@ -37,15 +37,15 @@ namespace ofxRenderToolkit
             auto frustumDepth = projInfo.farZ - projInfo.nearZ;
 
             // Calculate views space far frustum corner points.
-            auto farTL = ofVec3f(-halfFarWidth, halfFarHeight, -projInfo.farZ);
-            auto farTR = ofVec3f(halfFarWidth, halfFarHeight, -projInfo.farZ);
-            auto farBL = ofVec3f(-halfFarWidth, -halfFarHeight, -projInfo.farZ);
-            auto farBR = ofVec3f(halfFarWidth, -halfFarHeight, -projInfo.farZ);
+            auto farTL = glm::vec3(-halfFarWidth, halfFarHeight, -projInfo.farZ);
+            auto farTR = glm::vec3(halfFarWidth, halfFarHeight, -projInfo.farZ);
+            auto farBL = glm::vec3(-halfFarWidth, -halfFarHeight, -projInfo.farZ);
+            auto farBR = glm::vec3(halfFarWidth, -halfFarHeight, -projInfo.farZ);
 
-            auto nearTL = ofVec3f(-halfNearWidth, halfNearHeight, -projInfo.nearZ);
-            auto nearTR = ofVec3f(halfNearWidth, halfNearHeight, -projInfo.nearZ);
-            auto nearBL = ofVec3f(-halfNearWidth, -halfNearHeight, -projInfo.nearZ);
-            auto nearBR = ofVec3f(halfNearWidth, -halfNearHeight, -projInfo.nearZ);
+            auto nearTL = glm::vec3(-halfNearWidth, halfNearHeight, -projInfo.nearZ);
+            auto nearTR = glm::vec3(halfNearWidth, halfNearHeight, -projInfo.nearZ);
+            auto nearBL = glm::vec3(-halfNearWidth, -halfNearHeight, -projInfo.nearZ);
+            auto nearBR = glm::vec3(halfNearWidth, -halfNearHeight, -projInfo.nearZ);
 
             // Calculate X planes.
             auto farStepX = (halfFarWidth * 2.0f) / (this->numPlanesX - 1);
@@ -56,10 +56,10 @@ namespace ofxRenderToolkit
 
             auto stepZ = -frustumDepth / (this->numPlanesZ - 1);
 
-            auto & clusterColor = ofVec4f(1.0f, 1.0f, 1.0f, 0.7f);
+            auto & clusterColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.7f);
 
-            std::vector<ofVec3f> vertices;
-            std::vector<ofVec4f> colors;
+            std::vector<glm::vec3> vertices;
+            std::vector<glm::vec4> colors;
 
             for (int z = 0; z < this->numPlanesZ; ++z)
             {
@@ -77,10 +77,9 @@ namespace ofxRenderToolkit
                         auto xPercent = (float)x / this->numPlanesX;
 
                         auto dir = farPoint - nearPoint;
-                        auto len = dir.length();
-                        dir.normalize();
+						auto len = glm::length(dir);
 
-                        auto pt = dir * zPercent * len + nearPoint;
+                        auto pt = glm::normalize(dir) * zPercent * len + nearPoint;
                         vertices.push_back(pt);
 
                         nearPoint.x += nearStepX;
@@ -143,10 +142,10 @@ namespace ofxRenderToolkit
             this->clusterVbo.enableIndices();
 
             // Frustum lines
-            std::vector<ofVec3f> lineVertices;
-            std::vector<ofVec3f> lineColors;
+            std::vector<glm::vec3> lineVertices;
+            std::vector<glm::vec3> lineColors;
 
-            auto & frustumColor = ofVec3f(1.0f, 1.0f, 1.0f);
+            auto & frustumColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
             // sides
             lineVertices.push_back(nearBL);
@@ -220,7 +219,7 @@ namespace ofxRenderToolkit
             ofSetColor(ofFloatColor(1.0f, 1.0f, 1.0f, 1.0f));
 
             ofPushMatrix();
-            ofMultMatrix(camera.getModelViewMatrix().getInverse());
+            ofMultMatrix(glm::inverse(camera.getModelViewMatrix()));
             {
                 this->frustumVbo.draw(GL_LINES, 0, 24);
             }
@@ -251,7 +250,7 @@ namespace ofxRenderToolkit
             }
 
             ofPushMatrix();
-            ofMultMatrix(camera.getModelViewMatrix().getInverse());
+            ofMultMatrix(glm::inverse(camera.getModelViewMatrix()));
             {
                 const int numIndicesPerCluster = 24;
                 int startOffset = idx * numIndicesPerCluster;
@@ -279,7 +278,7 @@ namespace ofxRenderToolkit
             ofSetColor(ofFloatColor(1.0f, 1.0f, 1.0f, 0.3f));
 
             ofPushMatrix();
-            ofMultMatrix(camera.getModelViewMatrix().getInverse());
+            ofMultMatrix(glm::inverse(camera.getModelViewMatrix()));
             for (uint16_t idx = 0; idx < this->numClusters; ++idx)
             {
                 if (clusterGrid.clusterLightPointerList[idx].pointLightCount > 0)

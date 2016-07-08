@@ -43,11 +43,11 @@ namespace ofxRenderToolkit
         void ViewUbo::update(const ofCamera & camera)
         {
             const auto bounds = ofGetCurrentViewport();
-            this->data.viewportSize = ofVec2f(bounds.width, bounds.height);
+            this->data.viewportSize = glm::vec2(bounds.width, bounds.height);
             this->data.rcpViewportSize = 1.0f / this->data.viewportSize;
             this->data.nearClip = camera.getNearClip();
             this->data.farClip = camera.getFarClip();
-            this->data.inverseViewMatrix = camera.getModelViewMatrix().getInverse();
+            this->data.inverseViewMatrix = glm::inverse(camera.getModelViewMatrix());
 
             this->ubo.updateData(sizeof(Data), &this->data);
         }

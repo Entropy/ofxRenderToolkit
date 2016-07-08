@@ -224,7 +224,7 @@ void ofApp::drawScene()
             {
                 ofTranslate(offset + x * spacing, radius * 2.0, offset + z * spacing);
                 ofScale(radius);
-                this->shader.setUniformMatrix3f("normalMatrix", ofxRTK::util::GetNormalMatrix());
+                this->shader.setUniformMatrix4f("uNormalMatrix", ofGetCurrentNormalMatrix());
                 
                 this->sphere.draw();
             }

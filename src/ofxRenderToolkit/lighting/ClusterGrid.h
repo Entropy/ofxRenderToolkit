@@ -45,7 +45,7 @@ namespace ofxRenderToolkit
 
             void setup(const ProjInfo & projInfo);
 
-            void cullPointLights(const ofMatrix4x4 & viewMatrix, const std::vector<PointLight> & pointLights);
+            void cullPointLights(const glm::mat4 & viewMatrix, const std::vector<PointLight> & pointLights);
 
             void sortLightIndexList();
 

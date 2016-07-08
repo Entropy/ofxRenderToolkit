@@ -219,7 +219,7 @@ namespace ofxRenderToolkit
                     auto & light = this->pointLights[lightIndices[idx]];
                     ofSetColor(ofFloatColor(light.color.x, light.color.y, light.color.z, 1.0f));
 
-                    ofTranslate(light.position);
+                    ofTranslate(light.position.xyz);
                     ofScale(light.radius);
                     this->debugSphere.drawWireframe();
                 }
@@ -240,7 +240,7 @@ namespace ofxRenderToolkit
                     auto & light = this->pointLights[lightIndices[idx]];
                     ofSetColor(ofFloatColor(0.2f, 0.2f, 0.2f, 1.0f));
 
-                    ofTranslate(light.position);
+                    ofTranslate(light.position.xyz);
                     ofScale(light.radius);
                     this->debugSphere.drawWireframe();
                 }

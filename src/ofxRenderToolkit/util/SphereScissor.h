@@ -24,7 +24,7 @@ namespace ofxRenderToolkit
         };
 
         //--------------------------------------------------------------
-        inline SphereProjectionResult ProjectSphere(const ofVec3f & center, float radius, float focalLength, float aspectRatio, ofVec2f * rectMin, ofVec2f * rectMax)
+        inline SphereProjectionResult ProjectSphere(const glm::vec3 & center, float radius, float focalLength, float aspectRatio, glm::vec2 * rectMin, glm::vec2 * rectMax)
         {
             auto cx = center.x;
             auto cy = center.y;
@@ -150,21 +150,21 @@ namespace ofxRenderToolkit
         }
 
         //--------------------------------------------------------------
-        inline ofVec2f ScreenCoordFromClipCoord(const ofVec3f & clipCoord, const ofRectangle & viewport)
+        inline glm::vec2 ScreenCoordFromClipCoord(const glm::vec3 & clipCoord, const ofRectangle & viewport)
         {
-            float x = viewport.x + (clipCoord.x + 1.0f) * 0.5f * viewport.width;
+			float x = viewport.x + (clipCoord.x + 1.0f) * 0.5f * viewport.width;
             float y = viewport.y + (clipCoord.y + 1.0f) * 0.5f * viewport.height;
 
-            return ofVec2f(x, y);
+            return glm::vec2(x, y);
         }
 
         //--------------------------------------------------------------
-        inline ofVec2f ScreenCoordFromClipCoord(const ofVec2f & clipCoord, const ofRectangle & viewport)
+        inline glm::vec2 ScreenCoordFromClipCoord(const glm::vec2 & clipCoord, const ofRectangle & viewport)
         {
             float x = viewport.x + (clipCoord.x + 1.0f) * 0.5f * viewport.width;
             float y = viewport.y + (clipCoord.y + 1.0f) * 0.5f * viewport.height;
 
-            return ofVec2f(x, y);
+            return glm::vec2(x, y);
         }
     }
 }

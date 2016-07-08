@@ -8,20 +8,20 @@ namespace ofxRenderToolkit
     namespace util
     {
         //--------------------------------------------------------------
-        inline void GetNearFarFromProjectionMatrix(const ofMatrix4x4 & matrix, float * nearClip, float * farClip)
+        inline void GetNearFarFromProjectionMatrix(const glm::mat4 & matrix, float * nearClip, float * farClip)
         {
             //   fNear = -mProj.r3.z / mProj.r2.z;
             //   fFar = mProj.r2.z / (mProj.r2.z-1) * fNear;
 
-            float m31 = matrix._mat[0][2];
-            float m32 = matrix._mat[1][2];
-            float m33 = matrix._mat[2][2];
-            float m34 = matrix._mat[3][2];
+            float m31 = matrix[0][2];
+            float m32 = matrix[1][2];
+            float m33 = matrix[2][2];
+            float m34 = matrix[3][2];
 
-            float m41 = matrix._mat[0][3];
-            float m42 = matrix._mat[1][3];
-            float m43 = matrix._mat[2][3];
-            float m44 = matrix._mat[3][3];
+            float m41 = matrix[0][3];
+            float m42 = matrix[1][3];
+            float m43 = matrix[2][3];
+            float m44 = matrix[3][3];
 
             glm::vec4 nearPlane;
             glm::vec4 farPlane;
@@ -43,9 +43,9 @@ namespace ofxRenderToolkit
         }
 
         //--------------------------------------------------------------
-        inline float GetFovFromProjMatrix(const ofMatrix4x4 & mat4)
+        inline float GetFovFromProjMatrix(const glm::mat4 & mat4)
         {
-            return 2.0f * atanf(1.0f / mat4._mat[1][1]);
+            return 2.0f * atanf(1.0f / mat4[1][1]);
         }
 
         //--------------------------------------------------------------
@@ -62,18 +62,12 @@ namespace ofxRenderToolkit
         }
 
         //--------------------------------------------------------------
-        inline ofMatrix3x3 Mat4ToMat3(const ofMatrix4x4 & mat4)
+        inline glm::mat3 Mat4ToMat3(const glm::mat4 & mat4)
         {
-            return ofMatrix3x3(
-                mat4._mat[0][0], mat4._mat[0][1], mat4._mat[0][2],
-                mat4._mat[1][0], mat4._mat[1][1], mat4._mat[1][2],
-                mat4._mat[2][0], mat4._mat[2][1], mat4._mat[2][2]);
-        }
-
-        //--------------------------------------------------------------
-        inline ofMatrix3x3 GetNormalMatrix()
-        {
-            return Mat4ToMat3(ofGetCurrentNormalMatrix());
+            return glm::mat3(
+                mat4[0][0], mat4[0][1], mat4[0][2],
+                mat4[1][0], mat4[1][1], mat4[1][2],
+                mat4[2][0], mat4[2][1], mat4[2][2]);
         }
     }
 }

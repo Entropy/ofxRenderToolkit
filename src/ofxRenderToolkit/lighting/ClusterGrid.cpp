@@ -85,8 +85,8 @@ namespace ofxRenderToolkit
         //--------------------------------------------------------------
         void ClusterGrid::createPlanes()
         {
-            this->nearPlane = util::Plane(ofVec3f(0.0f, 0.0f, -this->projInfo.nearZ), ofVec3f(0.0f, 0.0f, 1.0f));
-            this->farPlane = util::Plane(ofVec3f(0.0f, 0.0f, -this->projInfo.farZ), ofVec3f(0.0f, 0.0f, 1.0f));
+            this->nearPlane = util::Plane(glm::vec3(0.0f, 0.0f, -this->projInfo.nearZ), glm::vec3(0.0f, 0.0f, 1.0f));
+            this->farPlane = util::Plane(glm::vec3(0.0f, 0.0f, -this->projInfo.farZ), glm::vec3(0.0f, 0.0f, 1.0f));
 
             // Half height and width in normalized form.
             auto halfNormHeight = std::tanf(this->projInfo.fov * 0.5f);
@@ -103,10 +103,10 @@ namespace ofxRenderToolkit
             auto centerZ = -(this->projInfo.farZ - this->projInfo.nearZ) * 0.5f;
 
             // Calculate views space far frustum corner points.
-            auto farTL = ofVec3f(-halfFarWidth, halfFarHeight, -this->projInfo.farZ);
-            auto farTR = ofVec3f(halfFarWidth, halfFarHeight, -this->projInfo.farZ);
-            auto farBL = ofVec3f(-halfFarWidth, -halfFarHeight, -this->projInfo.farZ);
-            auto farBR = ofVec3f(halfFarWidth, -halfFarHeight, -this->projInfo.farZ);
+            auto farTL = glm::vec3(-halfFarWidth, halfFarHeight, -this->projInfo.farZ);
+            auto farTR = glm::vec3(halfFarWidth, halfFarHeight, -this->projInfo.farZ);
+            auto farBL = glm::vec3(-halfFarWidth, -halfFarHeight, -this->projInfo.farZ);
+            auto farBR = glm::vec3(halfFarWidth, -halfFarHeight, -this->projInfo.farZ);
 
             // Calculate X planes.
             auto topPoint = farTL;
@@ -117,7 +117,7 @@ namespace ofxRenderToolkit
             for (int x = 0; x < NUM_PLANES_X; ++x)
             {
                 // Set plane normal and position.
-                ofVec3f normal = topPoint.getCrossed(bottomPoint).getNormalized();
+                auto normal = glm::normalize(glm::cross(topPoint, bottomPoint));
                 this->planesX[x] = util::Plane(normal, 0.0f);
 
                 topPoint.x += stepX;
@@ -133,7 +133,7 @@ namespace ofxRenderToolkit
             for (int y = 0; y < NUM_PLANES_Y; ++y)
             {
                 // Set plane normal and position.
-                ofVec3f normal = leftPoint.getCrossed(rightPoint).getNormalized();
+                auto normal = glm::normalize(glm::cross(leftPoint, rightPoint));
                 this->planesY[y] = util::Plane(normal, 0.0f);
 
                 leftPoint.y += stepY;
@@ -141,7 +141,7 @@ namespace ofxRenderToolkit
             }
 
             // Calculate Z planes
-            auto normal = ofVec3f(0.0f, 0.0f, -1.0f);
+            auto normal = glm::vec3(0.0f, 0.0f, -1.0f);
             auto distance = -this->projInfo.nearZ;
 
             for (int z = 0; z < NUM_PLANES_Z; ++z)
@@ -181,7 +181,7 @@ namespace ofxRenderToolkit
         }
 
         //--------------------------------------------------------------
-        void ClusterGrid::cullPointLights(const ofMatrix4x4 & viewMatrix, const std::vector<PointLight> & pointLights)
+        void ClusterGrid::cullPointLights(const glm::mat4 & viewMatrix, const std::vector<PointLight> & pointLights)
         {
             // Reset clusters.
             this->numLightIndices = 0;
@@ -206,8 +206,8 @@ namespace ofxRenderToolkit
             for (size_t idx = 0; idx < pointLights.size(); ++idx)
             {
                 const auto & light = pointLights[idx];
-                auto posVS = light.position * viewMatrix;
-                auto lightPosVS = ofVec3f(posVS.x, posVS.y, posVS.z);
+                auto posVS = viewMatrix * light.position;
+                auto lightPosVS = glm::vec3(posVS.x, posVS.y, posVS.z);
 
                 if (!util::SphereInFrustum(this->frustumPlanes, lightPosVS, light.radius))
                 {
@@ -224,7 +224,7 @@ namespace ofxRenderToolkit
                 auto z0 = std::max(0, std::min((int)(linearMinZ * (float)NUM_CLUSTERS_Z), NUM_CLUSTERS_Z - 1));
                 auto z1 = std::max(0, std::min((int)(linearMaxZ * (float)NUM_CLUSTERS_Z), NUM_CLUSTERS_Z - 1));
 
-                ofVec2f rectMin, rectMax;
+                glm::vec2 rectMin, rectMax;
                 const auto result = util::ProjectSphere(lightPosVS, light.radius, focalLength, aspectRatio, &rectMin, &rectMax);
 
                 // Is sphere behind near plane? If so, let's use a full frustrum box vs reduced sphere since it's difficult to calculate tight culling in this case.
@@ -278,7 +278,7 @@ namespace ofxRenderToolkit
 
                 for (int z = z0; z <= z1; ++z)
                 {
-                    ofVec3f zLight = lightPosVS;
+                    glm::vec3 zLight = lightPosVS;
                     float zRadius = light.radius;
 
                     if (z != centerZ)
@@ -297,7 +297,7 @@ namespace ofxRenderToolkit
 
                     for (int y = y0; y <= y1; ++y)
                     {
-                        ofVec3f y_light = zLight;
+                        glm::vec3 y_light = zLight;
                         float y_radius = zRadius;
 
                         if (y != centerY)

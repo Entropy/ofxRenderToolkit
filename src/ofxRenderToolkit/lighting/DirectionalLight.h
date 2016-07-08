@@ -18,7 +18,7 @@ namespace ofxRenderToolkit
             {};
 
             //--------------------------------------------------------------
-            DirectionalLight(const ofVec3f & direction, const ofVec3f & color, float intensity)
+            DirectionalLight(const glm::vec3 & direction, const glm::vec3 & color, float intensity)
                 : direction(direction)
                 , padding(0.0f)
                 , color(color)
@@ -26,13 +26,13 @@ namespace ofxRenderToolkit
             {}
 
         public:
-            ofVec3f direction;
+            glm::vec3 direction;
 
         private:
             float padding; // .w = 0 for point lights
 
         public:
-            ofVec3f color;
+			glm::vec3 color;
             float  intensity;
         };
     }

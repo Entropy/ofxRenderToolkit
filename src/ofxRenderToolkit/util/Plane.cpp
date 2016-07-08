@@ -9,7 +9,7 @@ namespace ofxRenderToolkit
         {};
 
         //--------------------------------------------------------------
-        Plane::Plane(const ofVec3f & normalizedNormal, float distance)
+        Plane::Plane(const glm::vec3 & normalizedNormal, float distance)
             : a(normalizedNormal.x)
             , b(normalizedNormal.y)
             , c(normalizedNormal.z)
@@ -17,18 +17,18 @@ namespace ofxRenderToolkit
         {};
 
         //--------------------------------------------------------------
-        Plane::Plane(const ofVec3f & normalizedNormal, const ofVec3f & point)
+        Plane::Plane(const glm::vec3 & normalizedNormal, const glm::vec3 & point)
             : a(normalizedNormal.x)
             , b(normalizedNormal.y)
             , c(normalizedNormal.z)
         {
-            this->d = -1.0f * normalizedNormal.dot(point);
+            this->d = -1.0f * glm::dot(normalizedNormal, point);
         }
 
         //--------------------------------------------------------------
-        Plane::Plane(const ofVec3f & point, const ofVec3f & v1, const ofVec3f & v2)
+        Plane::Plane(const glm::vec3 & point, const glm::vec3 & v1, const glm::vec3 & v2)
         {
-            Plane(v1.getCrossed(v2), point);
+            Plane(glm::cross(v1, v2), point);
         }
 
         //--------------------------------------------------------------
@@ -51,9 +51,9 @@ namespace ofxRenderToolkit
         }
 
         //--------------------------------------------------------------
-        ofVec3f Plane::getNormal() const
+        glm::vec3 Plane::getNormal() const
         {
-            return ofVec3f(this->a, this->b, this->c);
+            return glm::vec3(this->a, this->b, this->c);
         }
 
         //--------------------------------------------------------------
@@ -67,55 +67,55 @@ namespace ofxRenderToolkit
         }
 
         //--------------------------------------------------------------
-        float Plane::signedDistance(const ofVec3f & point) const
+        float Plane::signedDistance(const glm::vec3 & point) const
         {
             return (this->a * point.x + this->b * point.y + this->c * point.z + d);
         }
 
         //--------------------------------------------------------------
-        float Plane::signedDistanceXPlane(const ofVec3f & point) const
+        float Plane::signedDistanceXPlane(const glm::vec3 & point) const
         {
             return (this->a * point.x + this->c * point.z + this->d);
         }
 
         //--------------------------------------------------------------
-        float Plane::unsignedDistance(const ofVec3f & point) const
+        float Plane::unsignedDistance(const glm::vec3 & point) const
         {
             return fabsf(this->a * point.x + this->b * point.y + this->c * point.z + this->d);
         }
 
         //--------------------------------------------------------------
-        float Plane::unsignedDistanceX(const ofVec3f & point) const
+        float Plane::unsignedDistanceX(const glm::vec3 & point) const
         {
             return fabsf(this->a * point.x + this->c * point.z + this->d);
         }
 
         //--------------------------------------------------------------
-        ofVec3f Plane::closestPoint(const ofVec3f & point) const
+        glm::vec3 Plane::closestPoint(const glm::vec3 & point) const
         {
-            return ofVec3f(point.x - this->a, point.y - this->b, point.z - this->c) * this->signedDistance(point);
+            return glm::vec3(point.x - this->a, point.y - this->b, point.z - this->c) * this->signedDistance(point);
         }
 
         //--------------------------------------------------------------
-        ofVec3f Plane::projectPoint(const ofVec3f & point) const
+        glm::vec3 Plane::projectPoint(const glm::vec3 & point) const
         {
             return point - this->getNormal() * this->signedDistance(point);
         }
 
         //--------------------------------------------------------------
-        ofVec3f Plane::projectPointX(const ofVec3f & point) const
+        glm::vec3 Plane::projectPointX(const glm::vec3 & point) const
         {
-            return point - ofVec3f(-1.0f, 0.0f, 0.0f) * this->signedDistance(point);
+            return point - glm::vec3(-1.0f, 0.0f, 0.0f) * this->signedDistance(point);
         }
 
         //--------------------------------------------------------------
-        ofVec3f Plane::projectPointY(const ofVec3f & point) const
+        glm::vec3 Plane::projectPointY(const glm::vec3 & point) const
         {
-            return point - ofVec3f(0.0f, -1.0f, 0.0f) * this->signedDistance(point);
+            return point - glm::vec3(0.0f, -1.0f, 0.0f) * this->signedDistance(point);
         }
 
         //--------------------------------------------------------------
-        bool Plane::intersectsSphere(const ofVec3f & center, float radius, ofVec3f * circleMidPoint, float * circleRadius) const
+        bool Plane::intersectsSphere(const glm::vec3 & center, float radius, glm::vec3 * circleMidPoint, float * circleRadius) const
         {
             // http://www.ambrsoft.com/TrigoCalc/Sphere/SpherePlaneIntersection_.htm
             // Note: expects plane normal to be normalized (to save on the normalizing of the distToSphereCenter)
@@ -143,7 +143,7 @@ namespace ofxRenderToolkit
 
         //--------------------------------------------------------------
         // Optimized form for a Y plane
-        bool Plane::intersectsSphereY(const ofVec3f & center, float radius, ofVec3f * circleMidPoint, float * circleRadius) const
+        bool Plane::intersectsSphereY(const glm::vec3 & center, float radius, glm::vec3 * circleMidPoint, float * circleRadius) const
         {
             // http://www.ambrsoft.com/TrigoCalc/Sphere/SpherePlaneIntersection_.htm
             // Note: expects plane normal to be normalized (to save on the normalizing of the distToSphereCenter)
@@ -169,7 +169,7 @@ namespace ofxRenderToolkit
 
         //--------------------------------------------------------------
         // Optimized form for a Z plane
-        bool Plane::intersectsSphereZ(const ofVec3f & center, float radius, ofVec3f * circleMidPoint, float * circleRadius) const
+        bool Plane::intersectsSphereZ(const glm::vec3 & center, float radius, glm::vec3 * circleMidPoint, float * circleRadius) const
         {
             // http://www.ambrsoft.com/TrigoCalc/Sphere/SpherePlaneIntersection_.htm
             // Note: expects plane normal to be normalized (to save on the normalizing of the distToSphereCenter)

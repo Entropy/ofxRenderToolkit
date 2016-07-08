@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ClusterGrid.h"
 
 namespace ofxRenderToolkit

@@ -18,16 +18,16 @@ namespace ofxRenderToolkit
             {}
 
             //--------------------------------------------------------------
-            PointLight(const ofVec3f & position, const ofVec3f & color, float radius, float intensity)
-                : position(position.x, position.y, position.z, 1.0f)
-                , color(position)
+            PointLight(const glm::vec3 & position, const glm::vec3 & color, float radius, float intensity)
+                : position(position, 1.0f)
+                , color(color)
                 , radius(radius)
                 , intensity(intensity)
             {}
 
         public:
-            ofVec4f position;
-            ofVec3f color;
+            glm::vec4 position;
+            glm::vec3 color;
             float radius;
             float intensity;
             float padding[3];
