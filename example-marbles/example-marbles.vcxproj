@@ -97,7 +97,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <CompileAs>CompileAsCpp</CompileAs>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(OF_ROOT)\addons\ofxImGui\src;$(OF_ROOT)\addons\ofxImGui\libs\imgui\src;$(OF_ROOT)\addons\ofxRenderToolkit\src;$(OF_ROOT)\addons\ofxRenderToolkit\libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(OF_ROOT)\addons\ofxImGui\src;$(OF_ROOT)\addons\ofxImGui\libs\imgui\src;$(OF_ROOT)\addons\ofxRenderToolkit\src;$(OF_ROOT)\addons\ofxRenderToolkit\libs\gli\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -116,7 +116,7 @@
       <WarningLevel>Level3</WarningLevel>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(OF_ROOT)\addons\ofxImGui\src;$(OF_ROOT)\addons\ofxImGui\libs\imgui\src;$(OF_ROOT)\addons\ofxRenderToolkit\src;$(OF_ROOT)\addons\ofxRenderToolkit\libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(OF_ROOT)\addons\ofxImGui\src;$(OF_ROOT)\addons\ofxImGui\libs\imgui\src;$(OF_ROOT)\addons\ofxRenderToolkit\src;$(OF_ROOT)\addons\ofxRenderToolkit\libs\gli\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -134,7 +134,7 @@
       <WarningLevel>Level3</WarningLevel>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(OF_ROOT)\addons\ofxImGui\src;$(OF_ROOT)\addons\ofxImGui\libs\imgui\src;$(OF_ROOT)\addons\ofxRenderToolkit\src;$(OF_ROOT)\addons\ofxRenderToolkit\libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(OF_ROOT)\addons\ofxImGui\src;$(OF_ROOT)\addons\ofxImGui\libs\imgui\src;$(OF_ROOT)\addons\ofxRenderToolkit\src;$(OF_ROOT)\addons\ofxRenderToolkit\libs\gli\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -153,7 +153,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(OF_ROOT)\addons\ofxImGui\src;$(OF_ROOT)\addons\ofxImGui\libs\imgui\src;$(OF_ROOT)\addons\ofxRenderToolkit\src;$(OF_ROOT)\addons\ofxRenderToolkit\libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(OF_ROOT)\addons\ofxImGui\src;$(OF_ROOT)\addons\ofxImGui\libs\imgui\src;$(OF_ROOT)\addons\ofxRenderToolkit\src;$(OF_ROOT)\addons\ofxRenderToolkit\libs\gli\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -181,7 +181,6 @@
     <ClCompile Include="..\..\..\addons\ofxImGui\src\EngineGLFW.cpp" />
     <ClCompile Include="..\..\..\addons\ofxImGui\src\EngineOpenGLES.cpp" />
     <ClCompile Include="..\..\..\addons\ofxImGui\src\ofxImGui.cpp" />
-    <ClCompile Include="..\libs\glm\detail\glm.cpp" />
     <ClCompile Include="..\src\ofxRenderToolkit\lighting\ClusterGrid.cpp" />
     <ClCompile Include="..\src\ofxRenderToolkit\lighting\ClusterGridDebug.cpp" />
     <ClCompile Include="..\src\ofxRenderToolkit\lighting\System.cpp" />
@@ -205,200 +204,58 @@
     <ClInclude Include="..\..\..\addons\ofxImGui\src\imconfig.h" />
     <ClInclude Include="..\..\..\addons\ofxImGui\src\ofxImGui.h" />
     <ClInclude Include="..\..\..\addons\ofxImGui\src\ThemeTest.h" />
-    <ClInclude Include="..\libs\gli\clear.hpp" />
-    <ClInclude Include="..\libs\gli\comparison.hpp" />
-    <ClInclude Include="..\libs\gli\convert.hpp" />
-    <ClInclude Include="..\libs\gli\copy.hpp" />
-    <ClInclude Include="..\libs\gli\core\clear.hpp" />
-    <ClInclude Include="..\libs\gli\core\convert_func.hpp" />
-    <ClInclude Include="..\libs\gli\core\coord.hpp" />
-    <ClInclude Include="..\libs\gli\core\filter_compute.hpp" />
-    <ClInclude Include="..\libs\gli\core\flip.hpp" />
-    <ClInclude Include="..\libs\gli\core\mipmaps_compute.hpp" />
-    <ClInclude Include="..\libs\gli\core\storage.hpp" />
-    <ClInclude Include="..\libs\gli\core\storage_linear.hpp" />
-    <ClInclude Include="..\libs\gli\core\workaround.hpp" />
-    <ClInclude Include="..\libs\gli\duplicate.hpp" />
-    <ClInclude Include="..\libs\gli\dx.hpp" />
-    <ClInclude Include="..\libs\gli\filter.hpp" />
-    <ClInclude Include="..\libs\gli\format.hpp" />
-    <ClInclude Include="..\libs\gli\generate_mipmaps.hpp" />
-    <ClInclude Include="..\libs\gli\gl.hpp" />
-    <ClInclude Include="..\libs\gli\gli.hpp" />
-    <ClInclude Include="..\libs\gli\image.hpp" />
-    <ClInclude Include="..\libs\gli\levels.hpp" />
-    <ClInclude Include="..\libs\gli\load.hpp" />
-    <ClInclude Include="..\libs\gli\load_dds.hpp" />
-    <ClInclude Include="..\libs\gli\load_kmg.hpp" />
-    <ClInclude Include="..\libs\gli\load_ktx.hpp" />
-    <ClInclude Include="..\libs\gli\make_texture.hpp" />
-    <ClInclude Include="..\libs\gli\reduce.hpp" />
-    <ClInclude Include="..\libs\gli\sampler.hpp" />
-    <ClInclude Include="..\libs\gli\sampler1d.hpp" />
-    <ClInclude Include="..\libs\gli\sampler1d_array.hpp" />
-    <ClInclude Include="..\libs\gli\sampler2d.hpp" />
-    <ClInclude Include="..\libs\gli\sampler2d_array.hpp" />
-    <ClInclude Include="..\libs\gli\sampler3d.hpp" />
-    <ClInclude Include="..\libs\gli\sampler_cube.hpp" />
-    <ClInclude Include="..\libs\gli\sampler_cube_array.hpp" />
-    <ClInclude Include="..\libs\gli\save.hpp" />
-    <ClInclude Include="..\libs\gli\save_dds.hpp" />
-    <ClInclude Include="..\libs\gli\save_kmg.hpp" />
-    <ClInclude Include="..\libs\gli\save_ktx.hpp" />
-    <ClInclude Include="..\libs\gli\target.hpp" />
-    <ClInclude Include="..\libs\gli\texture.hpp" />
-    <ClInclude Include="..\libs\gli\texture1d.hpp" />
-    <ClInclude Include="..\libs\gli\texture1d_array.hpp" />
-    <ClInclude Include="..\libs\gli\texture2d.hpp" />
-    <ClInclude Include="..\libs\gli\texture2d_array.hpp" />
-    <ClInclude Include="..\libs\gli\texture3d.hpp" />
-    <ClInclude Include="..\libs\gli\texture_cube.hpp" />
-    <ClInclude Include="..\libs\gli\texture_cube_array.hpp" />
-    <ClInclude Include="..\libs\gli\transform.hpp" />
-    <ClInclude Include="..\libs\gli\type.hpp" />
-    <ClInclude Include="..\libs\gli\view.hpp" />
-    <ClInclude Include="..\libs\glm\common.hpp" />
-    <ClInclude Include="..\libs\glm\detail\func_common.hpp" />
-    <ClInclude Include="..\libs\glm\detail\func_exponential.hpp" />
-    <ClInclude Include="..\libs\glm\detail\func_geometric.hpp" />
-    <ClInclude Include="..\libs\glm\detail\func_integer.hpp" />
-    <ClInclude Include="..\libs\glm\detail\func_matrix.hpp" />
-    <ClInclude Include="..\libs\glm\detail\func_packing.hpp" />
-    <ClInclude Include="..\libs\glm\detail\func_trigonometric.hpp" />
-    <ClInclude Include="..\libs\glm\detail\func_vector_relational.hpp" />
-    <ClInclude Include="..\libs\glm\detail\intrinsic_common.hpp" />
-    <ClInclude Include="..\libs\glm\detail\intrinsic_exponential.hpp" />
-    <ClInclude Include="..\libs\glm\detail\intrinsic_geometric.hpp" />
-    <ClInclude Include="..\libs\glm\detail\intrinsic_integer.hpp" />
-    <ClInclude Include="..\libs\glm\detail\intrinsic_matrix.hpp" />
-    <ClInclude Include="..\libs\glm\detail\intrinsic_trigonometric.hpp" />
-    <ClInclude Include="..\libs\glm\detail\intrinsic_vector_relational.hpp" />
-    <ClInclude Include="..\libs\glm\detail\precision.hpp" />
-    <ClInclude Include="..\libs\glm\detail\setup.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_float.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_gentype.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_half.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_int.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_mat.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_mat2x2.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_mat2x3.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_mat2x4.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_mat3x2.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_mat3x3.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_mat3x4.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_mat4x2.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_mat4x3.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_mat4x4.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_vec.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_vec1.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_vec2.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_vec3.hpp" />
-    <ClInclude Include="..\libs\glm\detail\type_vec4.hpp" />
-    <ClInclude Include="..\libs\glm\detail\_features.hpp" />
-    <ClInclude Include="..\libs\glm\detail\_fixes.hpp" />
-    <ClInclude Include="..\libs\glm\detail\_noise.hpp" />
-    <ClInclude Include="..\libs\glm\detail\_swizzle.hpp" />
-    <ClInclude Include="..\libs\glm\detail\_swizzle_func.hpp" />
-    <ClInclude Include="..\libs\glm\detail\_vectorize.hpp" />
-    <ClInclude Include="..\libs\glm\exponential.hpp" />
-    <ClInclude Include="..\libs\glm\ext.hpp" />
-    <ClInclude Include="..\libs\glm\fwd.hpp" />
-    <ClInclude Include="..\libs\glm\geometric.hpp" />
-    <ClInclude Include="..\libs\glm\glm.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\bitfield.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\color_space.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\constants.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\epsilon.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\integer.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\matrix_access.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\matrix_integer.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\matrix_inverse.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\matrix_transform.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\noise.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\packing.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\quaternion.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\random.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\reciprocal.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\round.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\type_precision.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\type_ptr.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\ulp.hpp" />
-    <ClInclude Include="..\libs\glm\gtc\vec1.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\associated_min_max.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\bit.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\closest_point.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\color_space.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\color_space_YCoCg.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\common.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\compatibility.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\component_wise.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\dual_quaternion.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\euler_angles.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\extend.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\extented_min_max.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\fast_exponential.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\fast_square_root.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\fast_trigonometry.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\gradient_paint.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\handed_coordinate_space.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\hash.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\integer.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\intersect.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\io.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\log_base.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\matrix_cross_product.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\matrix_decompose.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\matrix_interpolation.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\matrix_major_storage.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\matrix_operation.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\matrix_query.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\matrix_transform_2d.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\mixed_product.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\norm.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\normal.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\normalize_dot.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\number_precision.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\optimum_pow.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\orthonormalize.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\perpendicular.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\polar_coordinates.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\projection.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\quaternion.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\range.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\raw_data.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\rotate_normalized_axis.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\rotate_vector.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\scalar_multiplication.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\scalar_relational.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\simd_mat4.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\simd_quat.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\simd_vec4.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\spline.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\std_based_type.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\string_cast.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\transform.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\transform2.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\type_aligned.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\vector_angle.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\vector_query.hpp" />
-    <ClInclude Include="..\libs\glm\gtx\wrap.hpp" />
-    <ClInclude Include="..\libs\glm\integer.hpp" />
-    <ClInclude Include="..\libs\glm\mat2x2.hpp" />
-    <ClInclude Include="..\libs\glm\mat2x3.hpp" />
-    <ClInclude Include="..\libs\glm\mat2x4.hpp" />
-    <ClInclude Include="..\libs\glm\mat3x2.hpp" />
-    <ClInclude Include="..\libs\glm\mat3x3.hpp" />
-    <ClInclude Include="..\libs\glm\mat3x4.hpp" />
-    <ClInclude Include="..\libs\glm\mat4x2.hpp" />
-    <ClInclude Include="..\libs\glm\mat4x3.hpp" />
-    <ClInclude Include="..\libs\glm\mat4x4.hpp" />
-    <ClInclude Include="..\libs\glm\matrix.hpp" />
-    <ClInclude Include="..\libs\glm\packing.hpp" />
-    <ClInclude Include="..\libs\glm\trigonometric.hpp" />
-    <ClInclude Include="..\libs\glm\vec2.hpp" />
-    <ClInclude Include="..\libs\glm\vec3.hpp" />
-    <ClInclude Include="..\libs\glm\vec4.hpp" />
-    <ClInclude Include="..\libs\glm\vector_relational.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\clear.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\comparison.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\convert.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\copy.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\core\clear.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\core\convert_func.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\core\coord.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\core\filter_compute.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\core\flip.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\core\mipmaps_compute.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\core\storage.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\core\storage_linear.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\core\workaround.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\duplicate.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\dx.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\filter.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\format.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\generate_mipmaps.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\gl.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\gli.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\image.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\levels.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\load.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\load_dds.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\load_kmg.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\load_ktx.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\make_texture.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\reduce.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\sampler.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\sampler1d.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\sampler1d_array.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\sampler2d.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\sampler2d_array.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\sampler3d.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\sampler_cube.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\sampler_cube_array.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\save.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\save_dds.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\save_kmg.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\save_ktx.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\target.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\texture.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\texture1d.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\texture1d_array.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\texture2d.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\texture2d_array.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\texture3d.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\texture_cube.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\texture_cube_array.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\transform.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\type.hpp" />
+    <ClInclude Include="..\libs\gli\include\gli\view.hpp" />
     <ClInclude Include="..\src\ofxRenderToolkit.h" />
     <ClInclude Include="..\src\ofxRenderToolkit\lighting\ClusterGrid.h" />
     <ClInclude Include="..\src\ofxRenderToolkit\lighting\ClusterGridDebug.h" />
@@ -432,6 +289,49 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\libs\gli\include\gli\core\clear.inl" />
+    <None Include="..\libs\gli\include\gli\core\comparison.inl" />
+    <None Include="..\libs\gli\include\gli\core\convert.inl" />
+    <None Include="..\libs\gli\include\gli\core\copy.inl" />
+    <None Include="..\libs\gli\include\gli\core\duplicate.inl" />
+    <None Include="..\libs\gli\include\gli\core\dx.inl" />
+    <None Include="..\libs\gli\include\gli\core\filter.inl" />
+    <None Include="..\libs\gli\include\gli\core\flip.inl" />
+    <None Include="..\libs\gli\include\gli\core\format.inl" />
+    <None Include="..\libs\gli\include\gli\core\generate_mipmaps.inl" />
+    <None Include="..\libs\gli\include\gli\core\gl.inl" />
+    <None Include="..\libs\gli\include\gli\core\image.inl" />
+    <None Include="..\libs\gli\include\gli\core\levels.inl" />
+    <None Include="..\libs\gli\include\gli\core\load.inl" />
+    <None Include="..\libs\gli\include\gli\core\load_dds.inl" />
+    <None Include="..\libs\gli\include\gli\core\load_kmg.inl" />
+    <None Include="..\libs\gli\include\gli\core\load_ktx.inl" />
+    <None Include="..\libs\gli\include\gli\core\make_texture.inl" />
+    <None Include="..\libs\gli\include\gli\core\reduce.inl" />
+    <None Include="..\libs\gli\include\gli\core\sampler.inl" />
+    <None Include="..\libs\gli\include\gli\core\sampler1d.inl" />
+    <None Include="..\libs\gli\include\gli\core\sampler1d_array.inl" />
+    <None Include="..\libs\gli\include\gli\core\sampler2d.inl" />
+    <None Include="..\libs\gli\include\gli\core\sampler2d_array.inl" />
+    <None Include="..\libs\gli\include\gli\core\sampler3d.inl" />
+    <None Include="..\libs\gli\include\gli\core\sampler_cube.inl" />
+    <None Include="..\libs\gli\include\gli\core\sampler_cube_array.inl" />
+    <None Include="..\libs\gli\include\gli\core\save.inl" />
+    <None Include="..\libs\gli\include\gli\core\save_dds.inl" />
+    <None Include="..\libs\gli\include\gli\core\save_kmg.inl" />
+    <None Include="..\libs\gli\include\gli\core\save_ktx.inl" />
+    <None Include="..\libs\gli\include\gli\core\storage.inl" />
+    <None Include="..\libs\gli\include\gli\core\storage_linear.inl" />
+    <None Include="..\libs\gli\include\gli\core\texture.inl" />
+    <None Include="..\libs\gli\include\gli\core\texture1d.inl" />
+    <None Include="..\libs\gli\include\gli\core\texture1d_array.inl" />
+    <None Include="..\libs\gli\include\gli\core\texture2d.inl" />
+    <None Include="..\libs\gli\include\gli\core\texture2d_array.inl" />
+    <None Include="..\libs\gli\include\gli\core\texture3d.inl" />
+    <None Include="..\libs\gli\include\gli\core\texture_cube.inl" />
+    <None Include="..\libs\gli\include\gli\core\texture_cube_array.inl" />
+    <None Include="..\libs\gli\include\gli\core\transform.inl" />
+    <None Include="..\libs\gli\include\gli\core\view.inl" />
     <None Include="bin\data\shaders\inc\clustered_shading.glsl" />
     <None Include="bin\data\shaders\inc\computeBrdfLut.frag" />
     <None Include="bin\data\shaders\inc\math.glsl" />
