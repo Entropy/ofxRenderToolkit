@@ -7,7 +7,6 @@
 
 #include "ofxRenderToolkit/pbr/CubeMapTexture.h"
 #include "ofxRenderToolkit/pbr/Material.h"
-#include "ofxRenderToolkit/pbr/Skybox.h"
 
 #include "ofxRenderToolkit/util/MatrixTools.h"
 #include "ofxRenderToolkit/util/CameraTools.h"

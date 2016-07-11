@@ -186,7 +186,6 @@
     <ClCompile Include="..\src\ofxRenderToolkit\lighting\System.cpp" />
     <ClCompile Include="..\src\ofxRenderToolkit\pbr\CubeMapTexture.cpp" />
     <ClCompile Include="..\src\ofxRenderToolkit\pbr\Material.cpp" />
-    <ClCompile Include="..\src\ofxRenderToolkit\pbr\Skybox.cpp" />
     <ClCompile Include="..\src\ofxRenderToolkit\util\Plane.cpp" />
     <ClCompile Include="..\src\ofxRenderToolkit\util\ViewUbo.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -266,7 +265,6 @@
     <ClInclude Include="..\src\ofxRenderToolkit\lighting\System.h" />
     <ClInclude Include="..\src\ofxRenderToolkit\pbr\CubeMapTexture.h" />
     <ClInclude Include="..\src\ofxRenderToolkit\pbr\Material.h" />
-    <ClInclude Include="..\src\ofxRenderToolkit\pbr\Skybox.h" />
     <ClInclude Include="..\src\ofxRenderToolkit\util\CameraTools.h" />
     <ClInclude Include="..\src\ofxRenderToolkit\util\FrustumTools.h" />
     <ClInclude Include="..\src\ofxRenderToolkit\util\GLError.h" />
