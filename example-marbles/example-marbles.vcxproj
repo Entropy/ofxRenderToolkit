@@ -334,18 +334,18 @@
     <None Include="..\libs\gli\include\gli\core\texture_cube_array.inl" />
     <None Include="..\libs\gli\include\gli\core\transform.inl" />
     <None Include="..\libs\gli\include\gli\core\view.inl" />
-    <None Include="bin\data\shaders\inc\clustered_shading.glsl" />
+    <None Include="bin\data\shaders\inc\clusteredShading.glsl" />
     <None Include="bin\data\shaders\inc\computeBrdfLut.frag" />
     <None Include="bin\data\shaders\inc\math.glsl" />
-    <None Include="bin\data\shaders\inc\of_default_uniforms.glsl" />
-    <None Include="bin\data\shaders\inc\of_default_vertex_in_attributes.glsl" />
+    <None Include="bin\data\shaders\inc\ofDefaultUniforms.glsl" />
+    <None Include="bin\data\shaders\inc\ofDefaultVertexInAttributes.glsl" />
     <None Include="bin\data\shaders\inc\pbr.glsl" />
-    <None Include="bin\data\shaders\inc\tone_mapping.glsl" />
+    <None Include="bin\data\shaders\inc\toneMapping.glsl" />
     <None Include="bin\data\shaders\inc\viewData.glsl" />
     <None Include="bin\data\shaders\main.frag" />
     <None Include="bin\data\shaders\main.vert" />
-    <None Include="bin\data\shaders\sky_box.frag" />
-    <None Include="bin\data\shaders\sky_box.vert" />
+    <None Include="bin\data\shaders\skybox.frag" />
+    <None Include="bin\data\shaders\skybox.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ProjectExtensions>

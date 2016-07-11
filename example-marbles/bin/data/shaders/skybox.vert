@@ -10,7 +10,7 @@
 
 #version 330
 
-#pragma include <inc/of_default_uniforms.glsl>
+#pragma include <inc/ofDefaultUniforms.glsl>
 
 #pragma include <inc/viewData.glsl>
 

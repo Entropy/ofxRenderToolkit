@@ -10,8 +10,8 @@
 
 #version 400
 
-#pragma include <inc/of_default_uniforms.glsl>
-#pragma include <inc/of_default_vertex_in_attributes.glsl> 
+#pragma include <inc/ofDefaultUniforms.glsl>
+#pragma include <inc/ofDefaultVertexInAttributes.glsl> 
 
 #pragma include <inc/viewData.glsl>
 

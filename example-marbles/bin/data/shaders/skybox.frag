@@ -10,7 +10,7 @@
 
 #version 330
 
-#pragma include <inc/tone_mapping.glsl>
+#pragma include <inc/toneMapping.glsl>
 
 uniform samplerCube uCubeMap;
 

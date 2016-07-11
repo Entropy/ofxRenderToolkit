@@ -58,8 +58,6 @@ void ofApp::setup()
     this->sphere = ofSpherePrimitive(1.0f, 24);
 
     this->debug = false;
-
-    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 }
 
 //--------------------------------------------------------------

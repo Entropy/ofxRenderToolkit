@@ -10,14 +10,14 @@
 
 #version 330 core
 
-#pragma include <inc/of_default_uniforms.glsl>
+#pragma include <inc/ofDefaultUniforms.glsl>
 
 #pragma include <inc/viewData.glsl>
-#pragma include <inc/clustered_shading.glsl>
+#pragma include <inc/clusteredShading.glsl>
 
 // PBR
 #pragma include <inc/math.glsl>
-#pragma include <inc/tone_mapping.glsl>
+#pragma include <inc/toneMapping.glsl>
 #pragma include <inc/pbr.glsl>
 
 in vec4 vVertex;
@@ -29,8 +29,6 @@ in vec3 vNormal_ws;
 in vec3 vEyeDir_ws;
 
 in float vLinearFragDepth;
-
-//uniform samplerCube uCubeMap;
 
 out vec4 oColor;
 
