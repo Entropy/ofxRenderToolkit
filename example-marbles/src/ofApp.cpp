@@ -21,19 +21,18 @@ void ofApp::setup()
 
     ofLogNotice("ofApp::setup") << "Camera clip: " << this->camera.getNearClip() << ", " << this->camera.getFarClip();
 
-    // Load shaders.
+	// Set up view UBO.
+	const int viewUboBinding = 1;
+	this->viewUbo.setup(viewUboBinding);
+
+    // Load shader.
     this->shader.load("shaders/main.vert", "shaders/main.frag");
     this->shader.printActiveUniforms();
     this->shader.printActiveUniformBlocks();
+	this->viewUbo.configureShader(this->shader);
 
-    this->skyboxShader.load("shaders/sky_box.vert", "shaders/sky_box.frag");
-    glGenVertexArrays( 1, &this->defaultVao );
-
-    // Set up view UBO.
-    const int viewUboBinding = 1;
-    this->viewUbo.setup(viewUboBinding);
-    this->viewUbo.configureShader(this->shader);
-    this->viewUbo.configureShader(this->skyboxShader);
+	// Load skybox.
+	this->skybox.setup(this->viewUbo);
 
     // Set up lighting.
     this->lightingSystem.setup(this->camera);
@@ -53,7 +52,6 @@ void ofApp::setup()
     this->exposure = ofxRTK::util::CalcEVFromCameraSettings(aperture, shutterSpeed);
     this->gamma = 2.2f;
 
-    this->skyboxMap.loadDDSTexture("textures/output_skybox.dds");
     this->irradianceMap.loadDDSTexture("textures/output_iem.dds");
     this->radianceMap.loadDDSTexture("textures/output_pmrem.dds");
 
@@ -178,27 +176,6 @@ void ofApp::imGui()
 }
 
 //--------------------------------------------------------------
-void ofApp::drawSkybox()
-{
-    glDisable(GL_CULL_FACE);
-    ofDisableDepthTest();
-
-    this->skyboxShader.begin();
-    this->skyboxShader.setUniform1f("uExposure", this->exposure);
-    this->skyboxShader.setUniform1f("uGamma", this->gamma);
-    this->skyboxShader.setUniform1i("uCubeMap", 3);
-    {
-        // Draw full-screen quad.
-        glBindVertexArray(this->defaultVao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-    }
-    this->skyboxShader.end();
-
-    ofEnableDepthTest();
-    glEnable(GL_CULL_FACE);
-}
-
-//--------------------------------------------------------------
 void ofApp::drawScene()
 {
     glCullFace(GL_FRONT);
@@ -258,13 +235,15 @@ void ofApp::draw()
     ofClear(0.0f, 1.0f);
  
     ofDisableAlphaBlending();
+	ofEnableDepthTest();
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
 
     this->viewUbo.bind();
     {
-        this->skyboxMap.bind(14);
+		this->skybox.bind(14);
+
         this->irradianceMap.bind(2);
         this->radianceMap.bind(3);
 
@@ -293,7 +272,7 @@ void ofApp::draw()
 
                 ofSetColor(255, 255, 255, 255);
 
-                this->drawSkybox();
+				this->skybox.draw(this->exposure, this->gamma);
 
                 this->lightingSystem.begin();
                 {
@@ -314,7 +293,8 @@ void ofApp::draw()
             this->camera.end();
         }
 
-        this->skyboxMap.unbind(14);
+        this->skybox.unbind(14);
+
         this->irradianceMap.unbind(2);
         this->radianceMap.unbind(3);
     }

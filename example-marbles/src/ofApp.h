@@ -17,7 +17,6 @@ public:
 
     void setDebug(bool debug);
 
-    void drawSkybox();
     void drawScene();
 
     void imGui();
@@ -42,13 +41,10 @@ private:
 
     ofxRTK::pbr::CubeMapTexture radianceMap;
     ofxRTK::pbr::CubeMapTexture irradianceMap;
-    ofxRTK::pbr::CubeMapTexture skyboxMap;
-
+    ofxRTK::pbr::Skybox skybox;
     ofxRTK::pbr::Material material;
 
     ofShader shader;
-    ofShader skyboxShader;
-    GLuint defaultVao;
 
     ofShader integrateDFGShader;
     ofFbo dfgFbo;

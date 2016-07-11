@@ -49,6 +49,9 @@
     <ClCompile Include="..\src\ofxRenderToolkit\util\ViewUbo.cpp">
       <Filter>addons\ofxRenderToolkit\src\ofxRenderToolkit\util</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\ofxRenderToolkit\pbr\Skybox.cpp">
+      <Filter>addons\ofxRenderToolkit\src\ofxRenderToolkit\pbr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\addons\ofxImGui\src\BaseEngine.h">
@@ -299,6 +302,9 @@
     </ClInclude>
     <ClInclude Include="..\libs\gli\include\gli\core\workaround.hpp">
       <Filter>addons\ofxRenderToolkit\libs\gli\include\gli\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxRenderToolkit\pbr\Skybox.h">
+      <Filter>addons\ofxRenderToolkit\src\ofxRenderToolkit\pbr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
