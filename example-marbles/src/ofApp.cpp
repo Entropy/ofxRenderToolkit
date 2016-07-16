@@ -75,9 +75,9 @@ void ofApp::createRandomLights()
     const auto numPointLights = 60;
     for (int i = 0; i < numPointLights; ++i)
     {
-        auto & offset = ofVec3f(ofRandom(-positionDist, positionDist), 0.0f, ofRandom(-positionDist, positionDist));
-        auto & light = ofxRTK::lighting::PointLight(offset, ofVec3f(1.0f, 1.0f, 1.0f), radius, 6000.0f);
-        light.color = ofVec3f(ofRandom(0.0f, 1.0f), ofRandom(0.0f, 1.0f), ofRandom(0.0f, 1.0f)).getNormalized();
+        auto offset = glm::vec3(ofRandom(-positionDist, positionDist), 0.0f, ofRandom(-positionDist, positionDist));
+		auto color = glm::normalize(glm::vec3(ofRandomuf(), ofRandomuf(), ofRandomuf()));
+        auto light = ofxRTK::lighting::PointLight(offset, color, radius, 6000.0f);
         this->lightingSystem.addPointLight(light);
     }
 }
@@ -154,7 +154,7 @@ void ofApp::imGui()
         if (ImGui::Button("Add Dir Light"))
         {
             this->lightingSystem.clearDirectionalLights();
-            auto & light = ofxRTK::lighting::DirectionalLight(ofVec3f(1.0f, -1.0f, 0.0f).getNormalized(), ofVec3f(1.0f, 1.0f, 1.0f), 1.0f);
+            auto & light = ofxRTK::lighting::DirectionalLight(glm::normalize(glm::vec3(1.0f, -1.0f, 0.0f)), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
             this->lightingSystem.addDirectionalLight(light);
         }
 
