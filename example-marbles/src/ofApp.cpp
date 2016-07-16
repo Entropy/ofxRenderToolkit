@@ -7,17 +7,17 @@ void ofApp::setup()
 
     // Set up cameras.
     this->camera.setupPerspective( false, 60.0f, 0.1f, 2000.0f );
-    this->debugCamera.setupPerspective( false, 60.0f, 1.0f, 10000.0f );
+    //this->debugCamera.setupPerspective( false, 60.0f, 1.0f, 10000.0f );
 
     ofLogNotice("ofApp::setup") << "Window size: " << ofGetWindowWidth() << "x" << ofGetWindowHeight();
 
-    this->camera.setAspectRatio( ofGetWindowWidth() / (float)ofGetWindowHeight() );
-    this->debugCamera.setAspectRatio( ofGetWindowWidth() / (float)ofGetWindowHeight() );
+    //this->camera.setAspectRatio( ofGetWindowWidth() / (float)ofGetWindowHeight() );
+    //this->debugCamera.setAspectRatio( ofGetWindowWidth() / (float)ofGetWindowHeight() );
 
-    this->camera.setPosition( 0.0, 0.0, 600.0 );
+    //this->camera.setPosition( 0.0, 0.0, 600.0 );
     
-    this->camera.setAutoDistance( false );
-    this->camera.setDistance( 500 );
+    //this->camera.setAutoDistance( false );
+    //this->camera.setDistance( 500 );
 
     ofLogNotice("ofApp::setup") << "Camera clip: " << this->camera.getNearClip() << ", " << this->camera.getFarClip();
 
@@ -26,7 +26,7 @@ void ofApp::setup()
     this->shader.printActiveUniforms();
     this->shader.printActiveUniformBlocks();
 
-    this->skyboxShader.load("shaders/sky_box.vert", "shaders/sky_box.frag");
+    this->skyboxShader.load("shaders/skybox.vert", "shaders/skybox.frag");
     glGenVertexArrays( 1, &this->defaultVao );
 
     // Set up view UBO.
@@ -56,6 +56,8 @@ void ofApp::setup()
     this->skyboxMap.loadDDSTexture("textures/output_skybox.dds");
     this->irradianceMap.loadDDSTexture("textures/output_iem.dds");
     this->radianceMap.loadDDSTexture("textures/output_pmrem.dds");
+
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
     this->sphere = ofSpherePrimitive(1.0f, 24);
 
