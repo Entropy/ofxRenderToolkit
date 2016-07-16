@@ -25,7 +25,8 @@ namespace ofxRenderToolkit
 
             if (texture.empty())
             {
-                return 0;
+				ofLogError("CubeMapTexture::createTexture") << "Error loading " << path;
+				return 0;
             }
 
             auto & translator = gli::gl(gli::gl::PROFILE_GL33);

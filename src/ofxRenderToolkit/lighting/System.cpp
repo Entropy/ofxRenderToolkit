@@ -134,7 +134,8 @@ namespace ofxRenderToolkit
         //--------------------------------------------------------------
         uint8_t System::getLightPointerTexUnit() const 
         {
-            return this->lightPointerTexUnit; }
+            return this->lightPointerTexUnit; 
+		}
 
         //--------------------------------------------------------------
         uint16_t System::getNumVisibleLights() const 

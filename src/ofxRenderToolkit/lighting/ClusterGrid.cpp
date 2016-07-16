@@ -13,6 +13,9 @@ namespace ofxRenderToolkit
     {
         //--------------------------------------------------------------
         ClusterGrid::ClusterGrid()
+			: planesX(nullptr)
+			, planesY(nullptr)
+			, planesZ(nullptr)
         {}
 
         //--------------------------------------------------------------
@@ -42,9 +45,9 @@ namespace ofxRenderToolkit
         //--------------------------------------------------------------
         ClusterGrid::~ClusterGrid()
         {
-            delete[] this->planesX;
-            delete[] this->planesY;
-            delete[] this->planesZ;
+            if (this->planesX) delete[] this->planesX;
+			if (this->planesY) delete[] this->planesY;
+			if (this->planesZ) delete[] this->planesZ;
         }
 
         //--------------------------------------------------------------
