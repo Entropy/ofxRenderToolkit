@@ -4,6 +4,8 @@
 #include "ofxImGui.h"
 #include "ofxRenderToolkit.h"
 
+//#define USE_INSTANCED 1
+
 class ofApp : public ofBaseApp
 {
 public:
@@ -60,6 +62,12 @@ private:
     ofEasyCam debugCamera;
 
     ofSpherePrimitive sphere;
+
+#ifdef USE_INSTANCED
+	ofVboMesh vboMesh;
+	ofBufferObject bufferObject;
+	ofTexture bufferTexture;
+#endif
 
     ofxImGui gui;
     bool mouseOverGui;

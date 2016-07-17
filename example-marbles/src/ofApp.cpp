@@ -6,18 +6,13 @@ void ofApp::setup()
     this->gui.setup();
 
     // Set up cameras.
-    this->camera.setupPerspective( false, 60.0f, 0.1f, 2000.0f );
-    //this->debugCamera.setupPerspective( false, 60.0f, 1.0f, 10000.0f );
+	this->camera.setupPerspective(false, 60.0f, 0.1f, 2000.0f);
+	this->debugCamera.setupPerspective(false, 60.0f, 1.0f, 10000.0f);
 
     ofLogNotice("ofApp::setup") << "Window size: " << ofGetWindowWidth() << "x" << ofGetWindowHeight();
 
-    //this->camera.setAspectRatio( ofGetWindowWidth() / (float)ofGetWindowHeight() );
-    //this->debugCamera.setAspectRatio( ofGetWindowWidth() / (float)ofGetWindowHeight() );
-
-    //this->camera.setPosition( 0.0, 0.0, 600.0 );
-    
-    //this->camera.setAutoDistance( false );
-    //this->camera.setDistance( 500 );
+	this->camera.setAspectRatio(ofGetWindowWidth() / (float)ofGetWindowHeight());
+	this->debugCamera.setAspectRatio(ofGetWindowWidth() / (float)ofGetWindowHeight());
 
     ofLogNotice("ofApp::setup") << "Camera clip: " << this->camera.getNearClip() << ", " << this->camera.getFarClip();
 
@@ -119,6 +114,10 @@ void ofApp::imGui()
         ImGui::ColorEdit4("Base Color", (float *)&this->material.baseColor);
         ImGui::SliderFloat("Emissive Intensity", &this->material.emissiveIntensity, 0.0f, 1.0f);
         ImGui::ColorEdit4("Emissive Color", (float *)&this->material.emissiveColor);
+#ifdef USE_INSTANCED
+		ImGui::SliderFloat("Metallic", &this->material.metallic, 0.0f, 1.0f);
+		ImGui::SliderFloat("Roughness", &this->material.roughness, 0.0f, 1.0f);
+#endif
 
         ImGui::Separator();
         ImGui::Text("Camera Settings");
@@ -203,34 +202,60 @@ void ofApp::drawScene()
 {
     glCullFace(GL_FRONT);
 
-    int numSpheres = 8;
+    static const int kNumSpheres = 8;
 
-    float radius = 30.0f;
-    float spacing = radius * 2.0f + 15.0f;
-    float offset = -numSpheres * spacing * 0.5f;
+	static const float kRadius = 30.0f;
+	static const float kSpacing = kRadius * 2.0f + 15.0f;
+	static const float kOffset = -kNumSpheres * kSpacing * 0.5f;
 
-    for (int z = 0; z < numSpheres; ++z)
-    {
-        float zPercent = z / (float)(numSpheres - 1);
+#ifdef USE_INSTANCED
+	static const int kTotalSpheres = kNumSpheres * kNumSpheres; 
+	
+	if (!this->bufferObject.isAllocated())
+	{
+		this->vboMesh = this->sphere.getMesh();	
+		
+		glm::mat4 transforms[kTotalSpheres];
+		for (int z = 0; z < kNumSpheres; ++z)
+		{
+			for (int x = 0; x < kNumSpheres; ++x)
+			{
+				int idx = z * kNumSpheres + x;
+				transforms[idx] = glm::translate(glm::vec3(kOffset + x * kSpacing, kRadius * 2.0f, kOffset + z * kSpacing)) * glm::scale(glm::vec3(kRadius));
+			}
+		}
 
-        for (int x = 0; x < numSpheres; ++x)
-        {
-            float xPercent = x / (float)(numSpheres - 1);
-            this->material.metallic = std::max(zPercent, 0.001f);
-            this->material.roughness = std::max(xPercent * xPercent, 0.001f);
-            this->material.setUniforms(this->shader);
+		this->bufferObject.allocate(sizeof(glm::mat4) * kTotalSpheres, transforms, GL_STATIC_DRAW);
+		this->bufferTexture.allocateAsBufferTexture(this->bufferObject, GL_RGBA32F);
+	}
 
-            ofPushMatrix();
-            {
-                ofTranslate(offset + x * spacing, radius * 2.0, offset + z * spacing);
-                ofScale(radius);
-                this->shader.setUniformMatrix4f("uNormalMatrix", ofGetCurrentNormalMatrix());
-                
-                this->sphere.draw();
-            }
-            ofPopMatrix();
-        }
-    }
+	this->material.setUniforms(this->shader);
+	this->shader.setUniformTexture("uOffsetTex", this->bufferTexture, 0);
+	this->vboMesh.drawInstanced(OF_MESH_FILL, kTotalSpheres);
+#else
+	for (int z = 0; z < kNumSpheres; ++z)
+	{
+		float zPercent = z / (float)(kNumSpheres - 1);
+
+		for (int x = 0; x < kNumSpheres; ++x)
+		{
+			float xPercent = x / (float)(kNumSpheres - 1);
+			this->material.metallic = std::max(zPercent, 0.001f);
+			this->material.roughness = std::max(xPercent * xPercent, 0.001f);
+			this->material.setUniforms(this->shader);
+
+			ofPushMatrix();
+			{
+				ofTranslate(kOffset + x * kSpacing, kRadius * 2.0, kOffset + z * kSpacing);
+				ofScale(kRadius);
+				this->shader.setUniformMatrix4f("uNormalMatrix", ofGetCurrentNormalMatrix());
+
+				this->sphere.draw();
+			}
+			ofPopMatrix();
+		}
+	}
+#endif
 
     glCullFace(GL_BACK);
 }
