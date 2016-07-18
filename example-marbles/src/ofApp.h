@@ -5,6 +5,7 @@
 #include "ofxRenderToolkit.h"
 
 //#define USE_INSTANCED 1
+//#define USE_FBO 1
 
 class ofApp : public ofBaseApp
 {
@@ -67,6 +68,10 @@ private:
 	ofVboMesh vboMesh;
 	ofBufferObject bufferObject;
 	ofTexture bufferTexture;
+#endif
+
+#ifdef USE_FBO
+	ofFbo fbo;
 #endif
 
     ofxImGui gui;

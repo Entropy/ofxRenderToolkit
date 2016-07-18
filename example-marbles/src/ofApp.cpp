@@ -56,6 +56,16 @@ void ofApp::setup()
 
     this->sphere = ofSpherePrimitive(1.0f, 24);
 
+#ifdef USE_FBO
+	auto fboSettings = ofFbo::Settings();
+	fboSettings.width = ofGetWidth();
+	fboSettings.height = ofGetHeight();
+	fboSettings.textureTarget = GL_TEXTURE_2D;
+	fboSettings.useDepth = true;
+	fboSettings.numSamples = 4;
+	this->fbo.allocate(fboSettings);
+#endif
+
     this->debug = false;
 }
 
@@ -200,7 +210,11 @@ void ofApp::drawSkybox()
 //--------------------------------------------------------------
 void ofApp::drawScene()
 {
-    glCullFace(GL_FRONT);
+#ifdef USE_FBO
+	glCullFace(GL_BACK);
+#else
+	glCullFace(GL_FRONT);
+#endif
 
     static const int kNumSpheres = 8;
 
@@ -280,12 +294,15 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-    ofClear(0.0f, 1.0f);
+#ifdef USE_FBO
+	this->fbo.begin();
+#endif
+
+    ofClear(ofColor::black);
  
     ofDisableAlphaBlending();
 
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
 
     this->viewUbo.bind();
     {
@@ -344,6 +361,13 @@ void ofApp::draw()
         this->radianceMap.unbind(3);
     }
     this->viewUbo.unbind();
+
+	glDisable(GL_CULL_FACE);
+
+#ifdef USE_FBO
+	this->fbo.end();
+	this->fbo.draw(0, 0);
+#endif
 
     this->imGui();
 }
