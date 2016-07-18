@@ -64,6 +64,7 @@ void ofApp::setup()
 	fboSettings.useDepth = true;
 	fboSettings.numSamples = 4;
 	this->fbo.allocate(fboSettings);
+	this->fbo.getTexture().texData.bFlipTexture = true;
 #endif
 
     this->debug = false;
@@ -210,11 +211,7 @@ void ofApp::drawSkybox()
 //--------------------------------------------------------------
 void ofApp::drawScene()
 {
-#ifdef USE_FBO
-	glCullFace(GL_BACK);
-#else
 	glCullFace(GL_FRONT);
-#endif
 
     static const int kNumSpheres = 8;
 
@@ -295,7 +292,13 @@ void ofApp::update()
 void ofApp::draw()
 {
 #ifdef USE_FBO
-	this->fbo.begin();
+	// Don't use ofFbo::begin() because it messes with the winding direction.
+	// This means you'll need to set the viewports manually (e.g. for ofCamera::being())
+	ofPushView();
+	ofPushStyle();
+	ofViewport(0.0f, 0.0f, this->fbo.getWidth(), this->fbo.getHeight(), false);
+	ofSetupScreenPerspective(this->fbo.getWidth(), this->fbo.getHeight());
+	this->fbo.bind();
 #endif
 
     ofClear(ofColor::black);
@@ -328,7 +331,7 @@ void ofApp::draw()
         }
         else
         {
-            this->camera.begin();
+			this->camera.begin(ofRectangle(0, 0, this->fbo.getWidth(), this->fbo.getHeight()));
             {
                 this->viewUbo.update(this->camera);
                 this->lightingSystem.update(this->camera);
@@ -365,7 +368,11 @@ void ofApp::draw()
 	glDisable(GL_CULL_FACE);
 
 #ifdef USE_FBO
-	this->fbo.end();
+	// Manual ofFbo::end(), see comment at top of method.
+	this->fbo.unbind();
+	ofPopStyle();
+	ofPopView();
+
 	this->fbo.draw(0, 0);
 #endif
 
