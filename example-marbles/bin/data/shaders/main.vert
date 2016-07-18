@@ -15,7 +15,13 @@
 
 #pragma include <inc/viewData.glsl>
 
+//#define USE_INSTANCED 1
+
+#ifdef USE_INSTANCED
+uniform samplerBuffer uOffsetTex;
+#else
 uniform mat4 uNormalMatrix;
+#endif
 
 out vec4 vVertex;
 out vec3 vNormal;
@@ -28,15 +34,38 @@ out vec3 vNormal_ws;
 
 void main( void )
 {
-    vVertex = modelViewMatrix * position; // calculate view space position (required for lighting)
+#ifdef USE_INSTANCED
+    int idx = gl_InstanceID * 4;
+    mat4 transform = mat4( 
+        texelFetch(uOffsetTex, idx+0),
+        texelFetch(uOffsetTex, idx+1),
+        texelFetch(uOffsetTex, idx+2), 
+        texelFetch(uOffsetTex, idx+3)
+    );
+    mat4 transformMatrix = modelViewMatrix * transform;
+	mat4 normalMatrix = transpose(inverse(transformMatrix));
+    
+    vVertex = transformMatrix * position;
+    vNormal = normalize((normalMatrix * vec4(normal, 0.0)).xyz);
+
+    // Cube map vectors
+	mat4 inverseTransformMatrix = inverse(transformMatrix);
+    vec4 eyeDir_vs = vVertex - vec4( 0.0, 0.0, 0.0, 1.0);
+    vVertex_ws = (inverseTransformMatrix * vVertex).xyz;
+    vEyeDir_ws = (inverseTransformMatrix * eyeDir_vs).xyz;
+    vNormal_ws = (inverseTransformMatrix * vec4(vNormal, 0.0)).xyz;
+#else	
+	vVertex = modelViewMatrix * position; // calculate view space position (required for lighting)
 	vNormal = normalize((uNormalMatrix * vec4(normal, 0.0)).xyz); // calculate view space normal (required for lighting & normal mapping)
-    vTexCoord0 = texcoord; // pass texture coordinates
 
     // Cube map vectors
     vec4 eyeDir_vs = vVertex - vec4( 0.0, 0.0, 0.0, 1.0);
     vVertex_ws = (viewData.inverseViewMatrix * vVertex).xyz;
-    vEyeDir_ws = vec3(viewData.inverseViewMatrix * eyeDir_vs);
-    vNormal_ws = vec3(viewData.inverseViewMatrix * vec4( vNormal, 0.0));
+    vEyeDir_ws = (viewData.inverseViewMatrix * eyeDir_vs).xyz;
+    vNormal_ws = (viewData.inverseViewMatrix * vec4(vNormal, 0.0)).xyz;
+#endif
+
+    vTexCoord0 = texcoord; // pass texture coordinates
 
     gl_Position = projectionMatrix * vVertex;
 }
