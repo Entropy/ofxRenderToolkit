@@ -12,7 +12,8 @@ namespace ofxRenderToolkit
             ClusterGridDebug();
             ~ClusterGridDebug();
 
-            void createClusterMesh(const ClusterGrid & clusterGrid, const ProjInfo & projInfo);
+            void setup(const ClusterGrid & clusterGrid);
+
             void drawFrustum(const ofCamera & camera);
             void drawCluster(uint16_t idx);
             void drawCluster(const ofCamera & camera, uint16_t idx);

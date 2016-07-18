@@ -13,9 +13,9 @@ namespace ofxRenderToolkit
         {}
 
         //--------------------------------------------------------------
-        void ClusterGridDebug::createClusterMesh(const ClusterGrid & clusterGrid, const ProjInfo & projInfo)
+        void ClusterGridDebug::setup(const ClusterGrid & clusterGrid)
         {
-            this->numPlanesX = clusterGrid.getNumPlanesX();
+			this->numPlanesX = clusterGrid.getNumPlanesX();
             this->numPlanesY = clusterGrid.getNumPlanesY();
             this->numPlanesZ = clusterGrid.getNumPlanesZ();
 
@@ -24,199 +24,200 @@ namespace ofxRenderToolkit
             this->numClustersZ = clusterGrid.getNumClustersZ();
             this->numClusters = this->numClustersX * this->numClustersY * this->numClustersZ;
 
-            // Half height and width in normalized form.
-            auto halfNormHeight = std::tanf(projInfo.fov * 0.5f);
-            auto halfNormWidth = halfNormHeight * projInfo.aspectRatio;
+			const auto & projInfo = clusterGrid.getProjInfo();
+
+			// Half height and width in normalized form.
+			const auto halfNormHeight = std::tanf(projInfo.fov * 0.5f);
+			const auto halfNormWidth = halfNormHeight * projInfo.aspectRatio;
 
             // Half height and width at far plane.
-            auto halfFarHeight = halfNormHeight * projInfo.farZ;
-            auto halfFarWidth = halfNormWidth * projInfo.farZ;
-            auto halfNearHeight = halfNormHeight * projInfo.nearZ;
-            auto halfNearWidth = halfNormWidth * projInfo.nearZ;
+			const auto halfFarHeight = halfNormHeight * projInfo.farZ;
+			const auto halfFarWidth = halfNormWidth * projInfo.farZ;
+			const auto halfNearHeight = halfNormHeight * projInfo.nearZ;
+			const auto halfNearWidth = halfNormWidth * projInfo.nearZ;
 
-            auto frustumDepth = projInfo.farZ - projInfo.nearZ;
+			const auto frustumDepth = projInfo.farZ - projInfo.nearZ;
 
             // Calculate views space far frustum corner points.
-            auto farTL = glm::vec3(-halfFarWidth, halfFarHeight, -projInfo.farZ);
-            auto farTR = glm::vec3(halfFarWidth, halfFarHeight, -projInfo.farZ);
-            auto farBL = glm::vec3(-halfFarWidth, -halfFarHeight, -projInfo.farZ);
-            auto farBR = glm::vec3(halfFarWidth, -halfFarHeight, -projInfo.farZ);
+			const auto farTL = glm::vec3(-halfFarWidth, halfFarHeight, -projInfo.farZ);
+			const auto farTR = glm::vec3(halfFarWidth, halfFarHeight, -projInfo.farZ);
+			const auto farBL = glm::vec3(-halfFarWidth, -halfFarHeight, -projInfo.farZ);
+			const auto farBR = glm::vec3(halfFarWidth, -halfFarHeight, -projInfo.farZ);
 
-            auto nearTL = glm::vec3(-halfNearWidth, halfNearHeight, -projInfo.nearZ);
-            auto nearTR = glm::vec3(halfNearWidth, halfNearHeight, -projInfo.nearZ);
-            auto nearBL = glm::vec3(-halfNearWidth, -halfNearHeight, -projInfo.nearZ);
-            auto nearBR = glm::vec3(halfNearWidth, -halfNearHeight, -projInfo.nearZ);
+			const auto nearTL = glm::vec3(-halfNearWidth, halfNearHeight, -projInfo.nearZ);
+			const auto nearTR = glm::vec3(halfNearWidth, halfNearHeight, -projInfo.nearZ);
+			const auto nearBL = glm::vec3(-halfNearWidth, -halfNearHeight, -projInfo.nearZ);
+			const auto nearBR = glm::vec3(halfNearWidth, -halfNearHeight, -projInfo.nearZ);
 
-            // Calculate X planes.
-            auto farStepX = (halfFarWidth * 2.0f) / (this->numPlanesX - 1);
-            auto farStepY = (halfFarHeight * 2.0f) / (this->numPlanesY - 1);
+            // Build cluster VBO mesh.
+			{
+				const auto farStepX = (halfFarWidth * 2.0f) / (this->numPlanesX - 1);
+				const auto farStepY = (halfFarHeight * 2.0f) / (this->numPlanesY - 1);
 
-            auto nearStepX = (halfNearWidth * 2.0f) / (this->numPlanesX - 1);
-            auto nearStepY = (halfNearHeight * 2.0f) / (this->numPlanesY - 1);
+				const auto nearStepX = (halfNearWidth * 2.0f) / (this->numPlanesX - 1);
+				const auto nearStepY = (halfNearHeight * 2.0f) / (this->numPlanesY - 1);
 
-            auto stepZ = -frustumDepth / (this->numPlanesZ - 1);
+				std::vector<glm::vec3> vertices;
 
-            auto & clusterColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.7f);
+				for (int z = 0; z < this->numPlanesZ; ++z)
+				{
+					auto nearPoint = nearBL;
+					auto farPoint = farBL;
 
-            std::vector<glm::vec3> vertices;
-            std::vector<glm::vec4> colors;
+					auto zPercent = (float)z / (this->numPlanesZ - 1);
 
-            for (int z = 0; z < this->numPlanesZ; ++z)
-            {
-                auto nearPoint = nearBL;
-                auto farPoint = farBL;
+					for (int y = 0; y < this->numPlanesY; ++y)
+					{
+						auto yPercent = (float)y / this->numPlanesY;
 
-                auto zPercent = (float)z / (this->numPlanesZ - 1);
+						for (int x = 0; x < this->numPlanesX; ++x)
+						{
+							auto xPercent = (float)x / this->numPlanesX;
 
-                for (int y = 0; y < this->numPlanesY; ++y)
-                {
-                    auto yPercent = (float)y / this->numPlanesY;
+							auto dir = farPoint - nearPoint;
+							auto len = glm::length(dir);
 
-                    for (int x = 0; x < this->numPlanesX; ++x)
-                    {
-                        auto xPercent = (float)x / this->numPlanesX;
+							auto pt = glm::normalize(dir) * zPercent * len + nearPoint;
+							vertices.push_back(pt);
 
-                        auto dir = farPoint - nearPoint;
-						auto len = glm::length(dir);
+							nearPoint.x += nearStepX;
+							farPoint.x += farStepX;
+						}
 
-                        auto pt = glm::normalize(dir) * zPercent * len + nearPoint;
-                        vertices.push_back(pt);
+						nearPoint.x = nearBL.x;
+						farPoint.x = farBL.x;
 
-                        nearPoint.x += nearStepX;
-                        farPoint.x += farStepX;
-                    }
+						nearPoint.y += nearStepY;
+						farPoint.y += farStepY;
+					}
+				}
 
-                    nearPoint.x = nearBL.x;
-                    farPoint.x = farBL.x;
+				std::vector<ofIndexType> indices;
 
-                    nearPoint.y += nearStepY;
-                    farPoint.y += farStepY;
-                }
-            }
+				for (int z = 0; z < this->numClustersZ; ++z)
+				{
+					for (int y = 0; y < this->numClustersY; ++y)
+					{
+						uint32_t zOffset = this->numPlanesX * this->numPlanesY * z;
 
-            std::vector<ofIndexType> clusterIndices;
+						for (int x = 0; x < this->numClustersX; ++x)
+						{
+							uint32_t yOffset = y * this->numPlanesX;
 
-            for (int z = 0; z < this->numClustersZ; ++z)
-            {
-                for (int y = 0; y < this->numClustersY; ++y)
-                {
-                    uint32_t z_offset = this->numPlanesX * this->numPlanesY * z;
+							uint32_t frontTL = zOffset + yOffset + x;
+							uint32_t frontTR = frontTL + 1;
+							uint32_t frontBL = zOffset + yOffset + this->numPlanesX + x;
+							uint32_t frontBR = frontBL + 1;
 
-                    for (int x = 0; x < this->numClustersX; ++x)
-                    {
-                        uint32_t y_offset = y * this->numPlanesX;
+							uint32_t backTL = frontTL + this->numPlanesX * this->numPlanesY;
+							uint32_t backTR = frontTR + this->numPlanesX * this->numPlanesY;
+							uint32_t backBL = frontBL + this->numPlanesX * this->numPlanesY;
+							uint32_t backBR = frontBR + this->numPlanesX * this->numPlanesY;
 
-                        uint32_t tl_front = z_offset + y_offset + x;
-                        uint32_t tr_front = tl_front + 1;
-                        uint32_t bl_front = z_offset + y_offset + this->numPlanesX + x;
-                        uint32_t br_front = bl_front + 1;
+							// Front face
+							indices.push_back(frontTL); indices.push_back(frontTR);
+							indices.push_back(frontTR); indices.push_back(frontBR);
+							indices.push_back(frontBR); indices.push_back(frontBL);
+							indices.push_back(frontBL); indices.push_back(frontTL);
 
-                        uint32_t tl_back = tl_front + this->numPlanesX * this->numPlanesY;
-                        uint32_t tr_back = tr_front + this->numPlanesX * this->numPlanesY;
-                        uint32_t bl_back = bl_front + this->numPlanesX * this->numPlanesY;
-                        uint32_t br_back = br_front + this->numPlanesX * this->numPlanesY;
+							// Back face
+							indices.push_back(backTL); indices.push_back(backTR);
+							indices.push_back(backTR); indices.push_back(backBR);
+							indices.push_back(backBR); indices.push_back(backBL);
+							indices.push_back(backBL); indices.push_back(backTL);
 
-                        // front face
-                        clusterIndices.push_back(tl_front); clusterIndices.push_back(tr_front);
-                        clusterIndices.push_back(tr_front); clusterIndices.push_back(br_front);
-                        clusterIndices.push_back(br_front); clusterIndices.push_back(bl_front);
-                        clusterIndices.push_back(bl_front); clusterIndices.push_back(tl_front);
+							// Side faces 
+							indices.push_back(frontTL); indices.push_back(backTL);
+							indices.push_back(frontTR); indices.push_back(backTR);
+							indices.push_back(frontBR); indices.push_back(backBR);
+							indices.push_back(frontBL); indices.push_back(backBL);
+						}
+					}
+				}
 
-                        // back face
-                        clusterIndices.push_back(tl_back); clusterIndices.push_back(tr_back);
-                        clusterIndices.push_back(tr_back); clusterIndices.push_back(br_back);
-                        clusterIndices.push_back(br_back); clusterIndices.push_back(bl_back);
-                        clusterIndices.push_back(bl_back); clusterIndices.push_back(tl_back);
+				this->clusterVbo.setVertexData(vertices.data(), vertices.size(), GL_STATIC_DRAW);
+				this->clusterVbo.setIndexData(indices.data(), indices.size(), GL_STATIC_DRAW);
+				this->clusterVbo.enableIndices();
+			}
 
-                        // sides 
-                        clusterIndices.push_back(tl_front); clusterIndices.push_back(tl_back);
-                        clusterIndices.push_back(tr_front); clusterIndices.push_back(tr_back);
-                        clusterIndices.push_back(br_front); clusterIndices.push_back(br_back);
-                        clusterIndices.push_back(bl_front); clusterIndices.push_back(bl_back);
-                    }
-                }
-            }
+            // Build frustum VBO mesh.
+			{
+				std::vector<glm::vec3> vertices;
+				std::vector<glm::vec3> colors;
 
-            this->clusterVbo.setVertexData(vertices.data(), vertices.size(), GL_STATIC_DRAW);
-            this->clusterVbo.setIndexData(clusterIndices.data(), clusterIndices.size(), GL_STATIC_DRAW);
-            this->clusterVbo.enableIndices();
+				const auto & frustumColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
-            // Frustum lines
-            std::vector<glm::vec3> lineVertices;
-            std::vector<glm::vec3> lineColors;
+				// Sides
+				vertices.push_back(nearBL);
+				vertices.push_back(farBL);
+				colors.push_back(frustumColor);
+				colors.push_back(frustumColor);
 
-            auto & frustumColor = glm::vec3(1.0f, 1.0f, 1.0f);
+				vertices.push_back(nearBR);
+				vertices.push_back(farBR);
+				colors.push_back(frustumColor);
+				colors.push_back(frustumColor);
 
-            // sides
-            lineVertices.push_back(nearBL);
-            lineVertices.push_back(farBL);
-            lineColors.push_back(frustumColor);
-            lineColors.push_back(frustumColor);
+				vertices.push_back(nearTL);
+				vertices.push_back(farTL);
+				colors.push_back(frustumColor);
+				colors.push_back(frustumColor);
 
-            lineVertices.push_back(nearBR);
-            lineVertices.push_back(farBR);
-            lineColors.push_back(frustumColor);
-            lineColors.push_back(frustumColor);
+				vertices.push_back(nearTR);
+				vertices.push_back(farTR);
+				colors.push_back(frustumColor);
+				colors.push_back(frustumColor);
 
-            lineVertices.push_back(nearTL);
-            lineVertices.push_back(farTL);
-            lineColors.push_back(frustumColor);
-            lineColors.push_back(frustumColor);
+				// Near plane
+				vertices.push_back(nearTL);
+				vertices.push_back(nearTR);
+				colors.push_back(frustumColor);
+				colors.push_back(frustumColor);
 
-            lineVertices.push_back(nearTR);
-            lineVertices.push_back(farTR);
-            lineColors.push_back(frustumColor);
-            lineColors.push_back(frustumColor);
+				vertices.push_back(nearBL);
+				vertices.push_back(nearBR);
+				colors.push_back(frustumColor);
+				colors.push_back(frustumColor);
 
-            // near plane
-            lineVertices.push_back(nearTL);
-            lineVertices.push_back(nearTR);
-            lineColors.push_back(frustumColor);
-            lineColors.push_back(frustumColor);
+				vertices.push_back(nearTL);
+				vertices.push_back(nearBL);
+				colors.push_back(frustumColor);
+				colors.push_back(frustumColor);
 
-            lineVertices.push_back(nearBL);
-            lineVertices.push_back(nearBR);
-            lineColors.push_back(frustumColor);
-            lineColors.push_back(frustumColor);
+				vertices.push_back(nearTR);
+				vertices.push_back(nearBR);
+				colors.push_back(frustumColor);
+				colors.push_back(frustumColor);
 
-            lineVertices.push_back(nearTL);
-            lineVertices.push_back(nearBL);
-            lineColors.push_back(frustumColor);
-            lineColors.push_back(frustumColor);
+				// Far plane
+				vertices.push_back(farTL);
+				vertices.push_back(farTR);
+				colors.push_back(frustumColor);
+				colors.push_back(frustumColor);
 
-            lineVertices.push_back(nearTR);
-            lineVertices.push_back(nearBR);
-            lineColors.push_back(frustumColor);
-            lineColors.push_back(frustumColor);
+				vertices.push_back(farBL);
+				vertices.push_back(farBR);
+				colors.push_back(frustumColor);
+				colors.push_back(frustumColor);
 
-            // far plane
-            lineVertices.push_back(farTL);
-            lineVertices.push_back(farTR);
-            lineColors.push_back(frustumColor);
-            lineColors.push_back(frustumColor);
+				vertices.push_back(farTL);
+				vertices.push_back(farBL);
+				colors.push_back(frustumColor);
+				colors.push_back(frustumColor);
 
-            lineVertices.push_back(farBL);
-            lineVertices.push_back(farBR);
-            lineColors.push_back(frustumColor);
-            lineColors.push_back(frustumColor);
+				vertices.push_back(farTR);
+				vertices.push_back(farBR);
+				colors.push_back(frustumColor);
+				colors.push_back(frustumColor);
 
-            lineVertices.push_back(farTL);
-            lineVertices.push_back(farBL);
-            lineColors.push_back(frustumColor);
-            lineColors.push_back(frustumColor);
-
-            lineVertices.push_back(farTR);
-            lineVertices.push_back(farBR);
-            lineColors.push_back(frustumColor);
-            lineColors.push_back(frustumColor);
-
-            this->frustumVbo.setVertexData(lineVertices.data(), lineVertices.size(), GL_STATIC_DRAW);
+				this->frustumVbo.setVertexData(vertices.data(), vertices.size(), GL_STATIC_DRAW);
+			}
         }
 
         //--------------------------------------------------------------
         void ClusterGridDebug::drawFrustum(const ofCamera & camera)
         {
-            ofSetColor(ofFloatColor(1.0f, 1.0f, 1.0f, 1.0f));
+            ofSetColor(ofColor::white);
 
             ofPushMatrix();
             ofMultMatrix(glm::inverse(camera.getModelViewMatrix()));
@@ -235,9 +236,9 @@ namespace ofxRenderToolkit
                 return;
             }
 
-            const int numIndicesPerCluster = 24;
-            int startOffset = idx * numIndicesPerCluster;
-            this->clusterVbo.drawElements(GL_LINES, numIndicesPerCluster, startOffset);
+            static const int kNumIndicesPerCluster = 24;
+            int startOffset = idx * kNumIndicesPerCluster;
+            this->clusterVbo.drawElements(GL_LINES, kNumIndicesPerCluster, startOffset);
         }
 
         //--------------------------------------------------------------
@@ -252,9 +253,9 @@ namespace ofxRenderToolkit
             ofPushMatrix();
             ofMultMatrix(glm::inverse(camera.getModelViewMatrix()));
             {
-                const int numIndicesPerCluster = 24;
-                int startOffset = idx * numIndicesPerCluster;
-                this->clusterVbo.drawElements(GL_LINES, numIndicesPerCluster, startOffset);
+				static const int kNumIndicesPerCluster = 24;
+				int startOffset = idx * kNumIndicesPerCluster;
+                this->clusterVbo.drawElements(GL_LINES, kNumIndicesPerCluster, startOffset);
             }
             ofPopMatrix();
         }

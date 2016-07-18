@@ -19,12 +19,6 @@ namespace ofxRenderToolkit
         //--------------------------------------------------------------
         bool System::setup(const ofCamera & camera)
         {
-            ProjInfo projInfo;
-            projInfo.fov = ofDegToRad(camera.getFov());
-            projInfo.aspectRatio = camera.getAspectRatio();
-            projInfo.nearZ = camera.getNearClip();
-            projInfo.farZ = camera.getFarClip();
-
             // Clear lights.
             this->directionalLights.reserve(MAX_DIRECTIONAL_LIGHTS);
             this->pointLights.reserve(MAX_POINT_LIGHTS);
@@ -33,8 +27,8 @@ namespace ofxRenderToolkit
             this->pointLights.clear();
             
             // Setup cluster grid.
-            this->clusterGrid.setup(projInfo);
-            this->clusterGridDebug.createClusterMesh(this->clusterGrid, projInfo);
+            this->clusterGrid.setup(camera);
+            this->clusterGridDebug.setup(this->clusterGrid);
 
             // Create lights ubo.
             this->ubo.allocate(sizeof(Data), GL_DYNAMIC_DRAW);
@@ -176,7 +170,7 @@ namespace ofxRenderToolkit
         //--------------------------------------------------------------
         void System::update(const ofCamera & camera)
         {
-            this->clusterGrid.cullPointLights(camera.getModelViewMatrix(), this->pointLights);
+			this->clusterGrid.cullPointLights(camera.getModelViewMatrix(), this->pointLights);
             this->clusterGrid.sortLightIndexList();
             this->clusterGrid.updateLightIndexTextures();
 

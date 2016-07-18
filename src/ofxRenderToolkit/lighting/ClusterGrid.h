@@ -43,7 +43,8 @@ namespace ofxRenderToolkit
             ClusterGrid();
             ~ClusterGrid();
 
-            void setup(const ProjInfo & projInfo);
+            void setup(const ofCamera & camera);
+			void clear();
 
             void cullPointLights(const glm::mat4 & viewMatrix, const std::vector<PointLight> & pointLights);
 
@@ -52,6 +53,8 @@ namespace ofxRenderToolkit
             void updateLightIndexTextures();
             void bindLightIndexTextures(GLuint indexTexUnit, GLuint pointerTableTexUnit);
             void unbindLightIndexTextures(GLuint indexTexUnit, GLuint pointerTableTexUnit);
+
+			const ProjInfo & getProjInfo() const;
 
             int getNumPlanesX() const;
             int getNumPlanesY() const;

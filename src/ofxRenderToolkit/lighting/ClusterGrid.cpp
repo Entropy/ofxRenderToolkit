@@ -13,15 +13,29 @@ namespace ofxRenderToolkit
     {
         //--------------------------------------------------------------
         ClusterGrid::ClusterGrid()
-			: planesX(nullptr)
+			: lightIndexTbo(0)
+			, lightIndexTex(0)
+			, lightPointerTableTex3d(0)
+			, planesX(nullptr)
 			, planesY(nullptr)
 			, planesZ(nullptr)
         {}
 
+		//--------------------------------------------------------------
+		ClusterGrid::~ClusterGrid()
+		{
+			this->clear();
+		}
+
         //--------------------------------------------------------------
-        void ClusterGrid::setup(const ProjInfo & projInfo)
+        void ClusterGrid::setup(const ofCamera & camera)
         {
-            this->projInfo = projInfo;
+			this->clear();
+
+			this->projInfo.fov = ofDegToRad(camera.getFov());
+			this->projInfo.aspectRatio = camera.getAspectRatio();
+			this->projInfo.nearZ = camera.getNearClip();
+			this->projInfo.farZ = camera.getFarClip();
 
             memset(this->culledPointLightIndices, 0, sizeof(this->culledPointLightIndices[0]) * MAX_POINT_LIGHTS);
             this->numCulledLightIndices = 0;
@@ -42,13 +56,41 @@ namespace ofxRenderToolkit
             this->createPlanes();
         }
 
-        //--------------------------------------------------------------
-        ClusterGrid::~ClusterGrid()
-        {
-            if (this->planesX) delete[] this->planesX;
-			if (this->planesY) delete[] this->planesY;
-			if (this->planesZ) delete[] this->planesZ;
-        }
+		//--------------------------------------------------------------
+		void ClusterGrid::clear()
+		{
+			if (this->lightIndexTbo)
+			{
+				glDeleteBuffers(1, &this->lightIndexTbo);
+				this->lightIndexTbo = 0;
+			}
+			if (this->lightIndexTex)
+			{
+				glDeleteTextures(1, &this->lightIndexTex);
+				this->lightIndexTex = 0;
+			}
+			if (this->lightPointerTableTex3d)
+			{
+				glDeleteTextures(1, &this->lightPointerTableTex3d);
+				this->lightPointerTableTex3d = 0;
+			}
+			
+			if (this->planesX)
+			{
+				delete[] this->planesX;
+				this->planesX = nullptr;
+			}
+			if (this->planesY)
+			{
+				delete[] this->planesY;
+				this->planesY = nullptr;
+			}
+			if (this->planesZ)
+			{
+				delete[] this->planesZ;
+				this->planesZ = nullptr;
+			}
+		}
 
         //--------------------------------------------------------------
         void ClusterGrid::createLightIndexTextures()
@@ -408,6 +450,12 @@ namespace ofxRenderToolkit
             glBindTexture(GL_TEXTURE_3D, 0);
             CheckGLError();
         }
+
+		//--------------------------------------------------------------
+		const ProjInfo & ClusterGrid::getProjInfo() const
+		{
+			return this->projInfo;
+		}
 
         //--------------------------------------------------------------
         int ClusterGrid::getNumPlanesX() const 
