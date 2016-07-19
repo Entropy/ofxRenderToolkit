@@ -30,6 +30,8 @@ namespace ofxRenderToolkit
             glm::vec3 color;
             float radius;
             float intensity;
+
+		private:
             float padding[3];
         };
     }
