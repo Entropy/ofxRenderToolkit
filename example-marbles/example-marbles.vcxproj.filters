@@ -311,9 +311,6 @@
     <None Include="bin\data\shaders\main.vert">
       <Filter>shaders</Filter>
     </None>
-    <None Include="bin\data\shaders\inc\computeBrdfLut.frag">
-      <Filter>shaders\inc</Filter>
-    </None>
     <None Include="bin\data\shaders\inc\math.glsl">
       <Filter>shaders\inc</Filter>
     </None>

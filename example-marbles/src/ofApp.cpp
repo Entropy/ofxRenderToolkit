@@ -241,7 +241,7 @@ void ofApp::drawScene()
 	}
 
 	this->material.setUniforms(this->shader);
-	this->shader.setUniformTexture("uOffsetTex", this->bufferTexture, 0);
+	this->shader.setUniformTexture("uOffsetTex", this->bufferTexture, 2);
 	this->vboMesh.drawInstanced(OF_MESH_FILL, kTotalSpheres);
 #else
 	for (int z = 0; z < kNumSpheres; ++z)
@@ -331,7 +331,11 @@ void ofApp::draw()
         }
         else
         {
+#ifdef USE_FBO
 			this->camera.begin(ofRectangle(0, 0, this->fbo.getWidth(), this->fbo.getHeight()));
+#else
+			this->camera.begin();
+#endif
             {
                 this->viewUbo.update(this->camera);
                 this->lightingSystem.update(this->camera);

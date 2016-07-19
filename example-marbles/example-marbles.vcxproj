@@ -333,7 +333,6 @@
     <None Include="..\libs\gli\include\gli\core\transform.inl" />
     <None Include="..\libs\gli\include\gli\core\view.inl" />
     <None Include="bin\data\shaders\inc\clusteredShading.glsl" />
-    <None Include="bin\data\shaders\inc\computeBrdfLut.frag" />
     <None Include="bin\data\shaders\inc\math.glsl" />
     <None Include="bin\data\shaders\inc\ofDefaultUniforms.glsl" />
     <None Include="bin\data\shaders\inc\ofDefaultVertexInAttributes.glsl" />

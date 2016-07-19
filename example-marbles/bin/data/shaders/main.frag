@@ -28,8 +28,6 @@ in vec3 vVertex_ws;
 in vec3 vNormal_ws;
 in vec3 vEyeDir_ws;
 
-in float vLinearFragDepth;
-
 out vec4 oColor;
 
 void main( void )
@@ -104,4 +102,5 @@ void main( void )
     color = color * whiteScale;
 
     oColor = vec4( linearToGamma( color, uGamma ), uBaseColor.a );
+	//oColor = vec4( vVertex_ws, 1.0 );
 }
