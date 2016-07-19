@@ -24,7 +24,8 @@ namespace ofxRenderToolkit
             struct Data
             {
             public:
-                glm::mat4 inverseViewMatrix;
+				glm::mat4 viewMatrix;
+				glm::mat4 inverseViewMatrix;
                 glm::vec2 viewportSize;
 				glm::vec2 rcpViewportSize;
                 float nearClip;

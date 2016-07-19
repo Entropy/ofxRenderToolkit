@@ -20,13 +20,14 @@
 #pragma include <inc/toneMapping.glsl>
 #pragma include <inc/pbr.glsl>
 
-in vec4 vVertex;
-in vec3 vNormal;
-in vec2 vTexCoord0;
+in vec4 vVertex_vs;
+in vec3 vNormal_vs;
 
 in vec3 vVertex_ws;
 in vec3 vNormal_ws;
 in vec3 vEyeDir_ws;
+
+in vec2 vTexCoord0;
 
 out vec4 oColor;
 
@@ -44,8 +45,8 @@ void main( void )
     const vec3 dielectricColor = vec3( 0.08f );
     vec3 specularColor = mix( dielectricColor, baseColor, fMetalness );
 
-    vec3 N = normalize( vNormal ); // normal
-    vec3 V = normalize( -vVertex.xyz ); // view position  
+    vec3 N = normalize( vNormal_vs ); // normal
+    vec3 V = normalize( -vVertex_vs.xyz ); // view position  
 
     float NoV = saturate( dot( N, V ) ) + EPSILON;
 
@@ -54,7 +55,7 @@ void main( void )
 
     int lightIndexOffset = 0;
     int pointLightCount = 0;
-    GetLightOffsetAndCount( gl_FragCoord.xy, vVertex.z, lightIndexOffset, pointLightCount );
+    GetLightOffsetAndCount( gl_FragCoord.xy, vVertex_vs.z, lightIndexOffset, pointLightCount );
 
     vec3 diffuseResult = vec3( 0.0f );
     vec3 specularResult = vec3( 0.0f );
@@ -62,7 +63,7 @@ void main( void )
     for ( int i = 0; i < pointLightCount; ++i )
     {
         PointLight light = GetPointLight( lightIndexOffset++ );
-        CalcPointLight( light, vVertex.xyz, N, V, NoV, fRoughness, specularColor, diffuseResult, specularResult );
+        CalcPointLight( light, viewData.viewMatrix, vVertex_vs.xyz, N, V, NoV, fRoughness, specularColor, diffuseResult, specularResult );
 
         diffuseContrib += diffuseResult;
         specularContrib += specularResult;
@@ -71,7 +72,7 @@ void main( void )
     for ( int i = 0; i < directionalLightCount; ++i )
     {
         DirectionalLight light = directionalLights[ i ];
-        CalcDirectionalLight( light, vVertex.xyz, N, V, NoV, fRoughness, specularColor, diffuseResult, specularResult );
+        CalcDirectionalLight( light, viewData.viewMatrix, vVertex_vs.xyz, N, V, NoV, fRoughness, specularColor, diffuseResult, specularResult );
 
         diffuseContrib += diffuseResult;
         specularContrib += specularResult;    
@@ -102,5 +103,5 @@ void main( void )
     color = color * whiteScale;
 
     oColor = vec4( linearToGamma( color, uGamma ), uBaseColor.a );
-	//oColor = vec4( vVertex_ws, 1.0 );
+	//oColor = vec4( NoV, 0.0, 0.0, 1.0 );
 }

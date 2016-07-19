@@ -1,6 +1,7 @@
 struct ViewData
 {
-    mat4  inverseViewMatrix;
+    mat4  viewMatrix;
+	mat4  inverseViewMatrix;
     vec2  viewportSize;
     vec2  rcpViewportSize;    
     float nearClip;

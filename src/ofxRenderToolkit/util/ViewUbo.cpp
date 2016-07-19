@@ -47,7 +47,8 @@ namespace ofxRenderToolkit
             this->data.rcpViewportSize = 1.0f / this->data.viewportSize;
             this->data.nearClip = camera.getNearClip();
             this->data.farClip = camera.getFarClip();
-            this->data.inverseViewMatrix = glm::inverse(camera.getModelViewMatrix());
+			this->data.viewMatrix = camera.getModelViewMatrix();
+            this->data.inverseViewMatrix = glm::inverse(this->data.viewMatrix);
 
             this->ubo.updateData(sizeof(Data), &this->data);
         }
