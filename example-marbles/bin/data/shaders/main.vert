@@ -1,4 +1,4 @@
-// Filename: passthrough.vert
+// Filename: main.vert
 // 
 // Copyright © James Acres
 // http://www.jamesacres.com
@@ -46,27 +46,27 @@ void main( void )
 	);
 
 	vec4 vPosition_ws = modelMatrix * position;
-    vVertex_vs = modelViewMatrix * vPosition_ws;
+	vVertex_vs = modelViewMatrix * vPosition_ws;
 	vVertex_ws = vPosition_ws.xyz;
-    
+	
 	mat4 normalMatrix = transpose( inverse( modelViewMatrix * modelMatrix ) );
 	vNormal_vs = normalize( ( normalMatrix * vec4( normal, 0.0 ) ).xyz );
-    vNormal_ws = ( viewData.inverseViewMatrix * vec4( vNormal_vs, 0.0 ) ).xyz;
+	vNormal_ws = ( viewData.inverseViewMatrix * vec4( vNormal_vs, 0.0 ) ).xyz;
 
-    vec4 eyeDir_vs = vVertex_vs - vec4( 0.0, 0.0, 0.0, 1.0 );
-    vEyeDir_ws = ( viewData.inverseViewMatrix * eyeDir_vs ).xyz;
+	vec4 eyeDir_vs = vVertex_vs - vec4( 0.0, 0.0, 0.0, 1.0 );
+	vEyeDir_ws = ( viewData.inverseViewMatrix * eyeDir_vs ).xyz;
 #else	
 	vVertex_vs = modelViewMatrix * position;
-    vVertex_ws = ( viewData.inverseViewMatrix * vVertex ).xyz;
+	vVertex_ws = ( viewData.inverseViewMatrix * vVertex ).xyz;
 
 	vNormal_vs = normalize( ( uNormalMatrix * vec4( normal, 0.0 ) ).xyz );
-    vNormal_ws = ( viewData.inverseViewMatrix * vec4( vNormal, 0.0 ) ).xyz;
+	vNormal_ws = ( viewData.inverseViewMatrix * vec4( vNormal, 0.0 ) ).xyz;
 
-    vec4 eyeDir_vs = vVertex_vs - vec4( 0.0, 0.0, 0.0, 1.0 );
-    vEyeDir_ws = ( viewData.inverseViewMatrix * eyeDir_vs ).xyz;
+	vec4 eyeDir_vs = vVertex_vs - vec4( 0.0, 0.0, 0.0, 1.0 );
+	vEyeDir_ws = ( viewData.inverseViewMatrix * eyeDir_vs ).xyz;
 #endif
 
-    vTexCoord0 = texcoord;
+	vTexCoord0 = texcoord;
 
-    gl_Position = projectionMatrix * vVertex_vs;
+	gl_Position = projectionMatrix * vVertex_vs;
 }
