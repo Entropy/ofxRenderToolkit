@@ -45,10 +45,9 @@ void main( void )
     const vec3 dielectricColor = vec3( 0.08f );
     vec3 specularColor = mix( dielectricColor, baseColor, fMetalness );
 
-    vec3 N = normalize( vNormal_vs ); // normal
-    vec3 V = normalize( -vVertex_vs.xyz ); // view position  
-
-    float NoV = saturate( dot( N, V ) ) + EPSILON;
+    vec3 N_ws = normalize( vNormal_ws ); // normal
+    vec3 V_ws = normalize( -vVertex_ws.xyz ); // view position  
+    float NoV_ws = saturate( dot( N_ws, V_ws ) ) + EPSILON;
 
     vec3 specularContrib = vec3( 0.0, 0.0, 0.0 );
     vec3 diffuseContrib = vec3( 0.0, 0.0, 0.0 );
@@ -63,7 +62,7 @@ void main( void )
     for ( int i = 0; i < pointLightCount; ++i )
     {
         PointLight light = GetPointLight( lightIndexOffset++ );
-        CalcPointLight( light, viewData.viewMatrix, vVertex_vs.xyz, N, V, NoV, fRoughness, specularColor, diffuseResult, specularResult );
+        CalcPointLight( light, vVertex_ws.xyz, N_ws, V_ws, NoV_ws, fRoughness, specularColor, diffuseResult, specularResult );
 
         diffuseContrib += diffuseResult;
         specularContrib += specularResult;
@@ -72,20 +71,23 @@ void main( void )
     for ( int i = 0; i < directionalLightCount; ++i )
     {
         DirectionalLight light = directionalLights[ i ];
-        CalcDirectionalLight( light, viewData.viewMatrix, vVertex_vs.xyz, N, V, NoV, fRoughness, specularColor, diffuseResult, specularResult );
+        CalcDirectionalLight( light, vVertex_ws.xyz, N_ws, V_ws, NoV_ws, fRoughness, specularColor, diffuseResult, specularResult );
 
         diffuseContrib += diffuseResult;
         specularContrib += specularResult;    
      }
+	 
+	 // Image based lighting
 
     const int NUM_MIP_LEVELS = 7;
 
-    // Image based lighting
-    vec3 normal_ws = normalize( vNormal_ws ); 
-    vec3 reflect_ws = normalize( reflect( vEyeDir_ws, normal_ws ) );
+    vec3 reflect_ws = normalize( reflect( vEyeDir_ws, N_ws ) );
+	vec3 N_vs = normalize( vNormal_vs ); // normal
+    vec3 V_vs = normalize( -vVertex_vs.xyz ); // view position  
+    float NoV_vs = saturate( dot( N_vs, V_vs ) ) + EPSILON;
 
-    diffuseContrib += CalcIBLDiffuse( uIrradianceMap, normal_ws, ambientIntensity );
-    specularContrib += CalcIBLSpecular( uRadianceMap, NUM_MIP_LEVELS, reflect_ws, NoV, fRoughness, ambientIntensity );
+	diffuseContrib += CalcIBLDiffuse( uIrradianceMap, N_ws, ambientIntensity );
+    specularContrib += CalcIBLSpecular( uRadianceMap, NUM_MIP_LEVELS, reflect_ws, NoV_vs, fRoughness, ambientIntensity );
  
     diffuseContrib *= diffuseColor;
     specularContrib *= specularColor;
@@ -103,5 +105,4 @@ void main( void )
     color = color * whiteScale;
 
     oColor = vec4( linearToGamma( color, uGamma ), uBaseColor.a );
-	//oColor = vec4( NoV, 0.0, 0.0, 1.0 );
 }

@@ -124,7 +124,6 @@ float CalcPointLightAttenuation( vec3 lightPosition, vec3 vertexPosition, float 
 }
 
 void CalcPointLight( const in PointLight _light, 
-                     const in mat4 _viewMatrix,
                      const in vec3 _vertex,
                      const in vec3 _normal, 
                      const in vec3 _viewDir, 
@@ -133,9 +132,7 @@ void CalcPointLight( const in PointLight _light,
                      const in vec3 _specularColor,
                      out vec3 _diffuseContrib, out vec3 _specularContrib )
 {
-    vec3 vLightPosViewSpace = ( _viewMatrix * _light.position ).xyz;
-
-    vec3 L = normalize( vLightPosViewSpace - _vertex.xyz );    // light direction
+    vec3 L = normalize( _light.position.xyz - _vertex.xyz );    // light direction
     vec3 H = normalize( _viewDir + L );                              // half vector
 
     float NoL = saturate( dot( _normal, L ) ) + EPSILON;
@@ -159,7 +156,7 @@ void CalcPointLight( const in PointLight _light,
     vec3 specular = luminousIntensity * NoL * ( distribution * fresnel * geom ); // *_specularColor;
 
     // apply attenuation falloff
-    float attenuation = CalcPointLightAttenuation( vLightPosViewSpace, _vertex.xyz, _light.radius );
+    float attenuation = CalcPointLightAttenuation( _light.position.xyz, _vertex.xyz, _light.radius );
 
     diffuse *= attenuation;
     specular *= attenuation;
@@ -169,16 +166,15 @@ void CalcPointLight( const in PointLight _light,
 }
 
 void CalcDirectionalLight( const in DirectionalLight _light, 
-                           const in mat4 _viewMatrix,
                            const in vec3 _vertex,
                            const in vec3 _normal, 
-                           const in vec3 _viewDir, 
+                           const in vec3 _viewDir,
                            const in float _NoV,
                            const in float _roughness,
                            const in vec3 _specularColor,
                            out vec3 _diffuseContrib, out vec3 _specularContrib )
 {
-    vec3 L = ( _viewMatrix * -_light.direction ).xyz;
+    vec3 L = _light.direction.xyz;
     vec3 H = normalize( _viewDir + L );                              // half vector
 
     float NoL = saturate( dot( _normal, L ) ) + EPSILON;
