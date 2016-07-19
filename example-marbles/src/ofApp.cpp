@@ -164,7 +164,7 @@ void ofApp::imGui()
         if (ImGui::Button("Add Dir Light"))
         {
             this->lightingSystem.clearDirectionalLights();
-            auto & light = ofxRTK::lighting::DirectionalLight(glm::normalize(glm::vec3(1.0f, -1.0f, 0.0f)), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
+            auto light = ofxRTK::lighting::DirectionalLight(glm::normalize(glm::vec3(1.0f, -1.0f, 0.0f)), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
             this->lightingSystem.addDirectionalLight(light);
         }
 
@@ -246,18 +246,18 @@ void ofApp::drawScene()
 #else
 	for (int z = 0; z < kNumSpheres; ++z)
 	{
-		float zPercent = z / (float)(kNumSpheres - 1);
+		float zPercent = z / static_cast<float>(kNumSpheres - 1);
 
 		for (int x = 0; x < kNumSpheres; ++x)
 		{
-			float xPercent = x / (float)(kNumSpheres - 1);
+			float xPercent = x / static_cast<float>(kNumSpheres - 1);
 			this->material.metallic = std::max(zPercent, 0.001f);
 			this->material.roughness = std::max(xPercent * xPercent, 0.001f);
 			this->material.setUniforms(this->shader);
 
 			ofPushMatrix();
 			{
-				ofTranslate(kOffset + x * kSpacing, kRadius * 2.0, kOffset + z * kSpacing);
+				ofTranslate(kOffset + x * kSpacing, kRadius * 2.0f, kOffset + z * kSpacing);
 				ofScale(kRadius);
 				this->shader.setUniformMatrix4f("uNormalMatrix", ofGetCurrentNormalMatrix());
 

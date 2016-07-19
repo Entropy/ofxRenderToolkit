@@ -4,7 +4,7 @@
 #include "ofxImGui.h"
 #include "ofxRenderToolkit.h"
 
-#define USE_INSTANCED 1
+//#define USE_INSTANCED 1
 //#define USE_FBO 1
 
 class ofApp : public ofBaseApp
