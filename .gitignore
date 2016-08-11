@@ -1,9 +1,7 @@
 *.xcodeproj
-bin/data
-bin/libs/
-bin/*
-!bin/data/.gitkeep
-!bin/data/*
+*/bin/*
+!*/bin/data/.gitkeep
+!*/bin/data
 
 
 #########################

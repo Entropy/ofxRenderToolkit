@@ -305,12 +305,6 @@
     <ResourceCompile Include="icon.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bin\data\shaders\main.frag">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="bin\data\shaders\main.vert">
-      <Filter>shaders</Filter>
-    </None>
     <None Include="bin\data\shaders\inc\math.glsl">
       <Filter>shaders\inc</Filter>
     </None>
@@ -461,11 +455,23 @@
     <None Include="bin\data\shaders\skybox.vert">
       <Filter>shaders</Filter>
     </None>
+    <None Include="bin\data\shaders\inc\clusteredShading.glsl">
+      <Filter>shaders\inc</Filter>
+    </None>
     <None Include="bin\data\shaders\inc\toneMapping.glsl">
       <Filter>shaders\inc</Filter>
     </None>
-    <None Include="bin\data\shaders\inc\clusteredShading.glsl">
-      <Filter>shaders\inc</Filter>
+    <None Include="bin\data\shaders\marbles.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="bin\data\shaders\marbles.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="bin\data\shaders\render.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="bin\data\shaders\render.vert">
+      <Filter>shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -17,22 +17,35 @@ void ofApp::setup()
     ofLogNotice("ofApp::setup") << "Camera clip: " << this->camera.getNearClip() << ", " << this->camera.getFarClip();
 
     // Load shaders.
-    this->shader.load("shaders/main.vert", "shaders/main.frag");
-    this->shader.printActiveUniforms();
-    this->shader.printActiveUniformBlocks();
+    this->marblesShader.load("shaders/marbles.vert", "shaders/marbles.frag");
+    this->marblesShader.printActiveUniforms();
+    this->marblesShader.printActiveUniformBlocks();
 
     this->skyboxShader.load("shaders/skybox.vert", "shaders/skybox.frag");
+
+	this->renderShader.load("shaders/render.vert", "shaders/render.frag");
+
+	auto fboSettings = ofFbo::Settings();
+	fboSettings.width = ofGetWidth();
+	fboSettings.height = ofGetHeight();
+	fboSettings.textureTarget = GL_TEXTURE_2D;
+	fboSettings.internalformat = GL_RGBA32F;  // Important for HDR!
+	fboSettings.useDepth = true;
+	fboSettings.numSamples = 4;
+	this->fbo.allocate(fboSettings);
+	this->fbo.getTexture().texData.bFlipTexture = true;
+
     glGenVertexArrays( 1, &this->defaultVao );
 
     // Set up view UBO.
     const int viewUboBinding = 1;
     this->viewUbo.setup(viewUboBinding);
-    this->viewUbo.configureShader(this->shader);
+    this->viewUbo.configureShader(this->marblesShader);
     this->viewUbo.configureShader(this->skyboxShader);
 
     // Set up lighting.
     this->lightingSystem.setup(this->camera);
-    this->lightingSystem.configureShader(this->shader);
+    this->lightingSystem.configureShader(this->marblesShader);
     this->lightingSystem.setAmbientIntensity(0.5f);
 
     // Set up PBR.
@@ -55,17 +68,6 @@ void ofApp::setup()
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
     this->sphere = ofSpherePrimitive(1.0f, 24);
-
-#ifdef USE_FBO
-	auto fboSettings = ofFbo::Settings();
-	fboSettings.width = ofGetWidth();
-	fboSettings.height = ofGetHeight();
-	fboSettings.textureTarget = GL_TEXTURE_2D;
-	fboSettings.useDepth = true;
-	fboSettings.numSamples = 4;
-	this->fbo.allocate(fboSettings);
-	this->fbo.getTexture().texData.bFlipTexture = true;
-#endif
 
     this->debug = false;
 }
@@ -135,6 +137,16 @@ void ofApp::imGui()
         ImGui::SliderFloat("Exposure", &this->exposure, 0.01f, 10.0f);
         ImGui::SliderFloat("Gamma", &this->gamma, 0.01f, 10.0f);
 
+		ImGui::Text("Tone Mapping");
+		ImGui::Columns(3);
+		ImGui::RadioButton("None", &this->tonemapType, 0); ImGui::NextColumn();
+		ImGui::RadioButton("Uncharted 2", &this->tonemapType, 1); ImGui::NextColumn();
+		ImGui::RadioButton("Reinhard", &this->tonemapType, 2); ImGui::NextColumn();
+		ImGui::RadioButton("Reinhard Lum", &this->tonemapType, 3); ImGui::NextColumn();
+		ImGui::RadioButton("Filmic", &this->tonemapType, 4); ImGui::NextColumn();
+		ImGui::RadioButton("ACES", &this->tonemapType, 5); ImGui::NextColumn();
+		ImGui::Columns(1);
+
         ImGui::BeginGroup();
         ImGui::Text("Stats");
         ImGui::Text("Visible Lights: %u", this->lightingSystem.getNumVisibleLights());
@@ -194,8 +206,6 @@ void ofApp::drawSkybox()
     ofDisableDepthTest();
 
     this->skyboxShader.begin();
-    this->skyboxShader.setUniform1f("uExposure", this->exposure);
-    this->skyboxShader.setUniform1f("uGamma", this->gamma);
     this->skyboxShader.setUniform1i("uCubeMap", 3);
     {
         // Draw full-screen quad.
@@ -253,13 +263,13 @@ void ofApp::drawScene()
 			float xPercent = x / static_cast<float>(kNumSpheres - 1);
 			this->material.metallic = std::max(zPercent, 0.001f);
 			this->material.roughness = std::max(xPercent * xPercent, 0.001f);
-			this->material.setUniforms(this->shader);
+			this->material.setUniforms(this->marblesShader);
 
 			ofPushMatrix();
 			{
 				ofTranslate(kOffset + x * kSpacing, kRadius * 2.0f, kOffset + z * kSpacing);
 				ofScale(kRadius);
-				this->shader.setUniformMatrix4f("uNormalMatrix", ofGetCurrentNormalMatrix());
+				this->marblesShader.setUniformMatrix4f("uNormalMatrix", ofGetCurrentNormalMatrix());
 
 				this->sphere.draw();
 			}
@@ -291,15 +301,13 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-#ifdef USE_FBO
 	// Don't use ofFbo::begin() because it messes with the winding direction.
-	// This means you'll need to set the viewports manually (e.g. for ofCamera::being())
+	// This means you'll need to set the viewports manually (e.g. for ofCamera::begin())
 	ofPushView();
 	ofPushStyle();
 	ofViewport(0.0f, 0.0f, this->fbo.getWidth(), this->fbo.getHeight(), false);
 	ofSetupScreenPerspective(this->fbo.getWidth(), this->fbo.getHeight());
 	this->fbo.bind();
-#endif
 
     ofClear(ofColor::black);
  
@@ -331,11 +339,7 @@ void ofApp::draw()
         }
         else
         {
-#ifdef USE_FBO
 			this->camera.begin(ofRectangle(0, 0, this->fbo.getWidth(), this->fbo.getHeight()));
-#else
-			this->camera.begin();
-#endif
             {
                 this->viewUbo.update(this->camera);
                 this->lightingSystem.update(this->camera);
@@ -346,17 +350,15 @@ void ofApp::draw()
 
                 this->lightingSystem.begin();
                 {
-                    this->shader.begin();
+                    this->marblesShader.begin();
                     {
-                        this->material.setUniforms(this->shader);
-                        this->shader.setUniform1f("uExposure", this->exposure);
-                        this->shader.setUniform1f("uGamma", this->gamma);
-                        this->shader.setUniform1i("uIrradianceMap", 2);
-                        this->shader.setUniform1i("uRadianceMap", 3);
+                        this->material.setUniforms(this->marblesShader);
+                        this->marblesShader.setUniform1i("uIrradianceMap", 2);
+                        this->marblesShader.setUniform1i("uRadianceMap", 3);
                     
                         this->drawScene();
                     }
-                    this->shader.end();
+                    this->marblesShader.end();
                 }
                 this->lightingSystem.end();
             }
@@ -371,14 +373,24 @@ void ofApp::draw()
 
 	glDisable(GL_CULL_FACE);
 
-#ifdef USE_FBO
 	// Manual ofFbo::end(), see comment at top of method.
 	this->fbo.unbind();
 	ofPopStyle();
 	ofPopView();
 
-	this->fbo.draw(0, 0);
-#endif
+	this->renderShader.begin();
+	this->renderShader.setUniform1f("uExposure", this->exposure);
+	this->renderShader.setUniform1f("uGamma", this->gamma);
+	this->renderShader.setUniform1i("uTonemapType", this->tonemapType); 
+	this->renderShader.setUniformTexture("uTexture", this->fbo.getTexture(), 1);
+	{
+		// Draw full-screen quad.
+		glBindVertexArray(this->defaultVao);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	}
+	this->renderShader.end();
+	//this->fbo.draw(0, 0);
 
     this->imGui();
 }
@@ -429,6 +441,7 @@ void ofApp::mouseExited(int x, int y){
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
+	
 }
 
 //--------------------------------------------------------------
