@@ -5,7 +5,6 @@
 #include "ofxRenderToolkit.h"
 
 //#define USE_INSTANCED 1
-//#define USE_FBO 1
 
 class ofApp : public ofBaseApp
 {
@@ -49,15 +48,20 @@ private:
 
     ofxRTK::pbr::Material material;
 
-    ofShader shader;
+    ofShader marblesShader;
     ofShader skyboxShader;
+	ofShader renderShader;
+
+	ofFbo fbo;
+
     GLuint defaultVao;
 
-    ofShader integrateDFGShader;
-    ofFbo dfgFbo;
+    //ofShader integrateDFGShader;
+    //ofFbo dfgFbo;
 
     float exposure;
     float gamma;
+	int tonemapType;
 
     ofEasyCam camera;
     ofEasyCam debugCamera;
@@ -68,10 +72,6 @@ private:
 	ofVboMesh vboMesh;
 	ofBufferObject bufferObject;
 	ofTexture bufferTexture;
-#endif
-
-#ifdef USE_FBO
-	ofFbo fbo;
 #endif
 
     ofxImGui gui;

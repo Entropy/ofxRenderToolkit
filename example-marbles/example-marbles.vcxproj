@@ -339,8 +339,10 @@
     <None Include="bin\data\shaders\inc\pbr.glsl" />
     <None Include="bin\data\shaders\inc\toneMapping.glsl" />
     <None Include="bin\data\shaders\inc\viewData.glsl" />
-    <None Include="bin\data\shaders\main.frag" />
-    <None Include="bin\data\shaders\main.vert" />
+    <None Include="bin\data\shaders\marbles.frag" />
+    <None Include="bin\data\shaders\marbles.vert" />
+    <None Include="bin\data\shaders\render.frag" />
+    <None Include="bin\data\shaders\render.vert" />
     <None Include="bin\data\shaders\skybox.frag" />
     <None Include="bin\data\shaders\skybox.vert" />
   </ItemGroup>
