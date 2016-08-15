@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_DEPRECATE  // Gets rid of MS warning about fopen()
 #include "gli/gli.hpp"
 
 #include "CubeMapTexture.h"
