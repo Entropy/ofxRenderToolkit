@@ -8,16 +8,40 @@ namespace ofxRenderToolkit
         Material::Material()
             : updateFlags(0)
             , name("")
-            , baseColor(0.0f, 0.0f, 0.0f, 1.0f)
-            , metallic(0.0f)
-            , roughness(0.0f)
-            , emissiveColor(0.0f, 0.0f, 0.0f, 1.0f)
-            , emissiveIntensity(0.0f)
+            , baseColor("Base Color", ofFloatColor::black)
+            , metallic("Metallic", 0.0f, 0.0f, 1.0f)
+            , roughness("Roughness", 0.0f, 0.0f, 1.0f)
+            , emissiveColor("Emissive Color", ofFloatColor::black)
+            , emissiveIntensity("Emissive Intensity", 0.0f, 0.0f, 1.0f)
             , texAlbedo(nullptr)
             , texNormal(nullptr)
             , texMetalness(nullptr)
             , texRoughness(nullptr)
-        {}
+        {
+			this->parameters.setName("Material");
+			this->parameters.add(baseColor, metallic, roughness, emissiveColor, emissiveIntensity);
+        
+			this->eventListeners.push_back(this->baseColor.newListener([this](ofFloatColor &)
+			{
+				this->updateFlags |= Material::UPDATE_BASE_COLOR;
+			}));
+			this->eventListeners.push_back(this->metallic.newListener([this](float &)
+			{
+				this->updateFlags |= Material::UPDATE_METALLIC;
+			}));
+			this->eventListeners.push_back(this->roughness.newListener([this](float &)
+			{
+				this->updateFlags |= Material::UPDATE_ROUGHNESS;
+			}));
+			this->eventListeners.push_back(this->emissiveColor.newListener([this](ofFloatColor &)
+			{
+				this->updateFlags |= Material::UPDATE_BASE_COLOR;
+			}));
+			this->eventListeners.push_back(this->emissiveIntensity.newListener([this](float &)
+			{
+				this->updateFlags |= Material::UPDATE_METALLIC;
+			}));
+		}
 
         //--------------------------------------------------------------
         void Material::clearUpdateFlags()
@@ -29,41 +53,6 @@ namespace ofxRenderToolkit
         void Material::setName(const std::string & name)
         {
             this->name = name;
-        }
-
-        //--------------------------------------------------------------
-        void Material::setBaseColor(const ofFloatColor & color)
-        {
-            this->baseColor = color;
-            this->updateFlags |= Material::UPDATE_BASE_COLOR;
-        }
-
-        //--------------------------------------------------------------
-        void Material::setMetallic(float metallic)
-        {
-            this->metallic = std::min(std::max(metallic, 0.001f), 1.0f);
-            this->updateFlags |= Material::UPDATE_METALLIC;
-        }
-
-        //--------------------------------------------------------------
-        void Material::setRoughness(float roughness)
-        {
-            this->roughness = std::min(std::max(roughness, 0.001f), 1.0f);
-            this->updateFlags |= Material::UPDATE_ROUGHNESS;
-        }
-
-        //--------------------------------------------------------------
-        void Material::setEmissiveColor(const ofFloatColor & color)
-        {
-            this->emissiveColor = color;
-            this->updateFlags |= Material::UPDATE_BASE_COLOR;
-        }
-
-        //--------------------------------------------------------------
-        void Material::setEmissiveIntensity(float intensity)
-        {
-            this->emissiveIntensity = std::min(std::max(intensity, 0.0f), 1.0f);
-            this->updateFlags |= Material::UPDATE_METALLIC;
         }
 
         //--------------------------------------------------------------

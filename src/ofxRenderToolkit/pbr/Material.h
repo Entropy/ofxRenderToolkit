@@ -16,14 +16,6 @@ namespace ofxRenderToolkit
 
             void setName(const std::string & name);
 
-            void setBaseColor(const ofFloatColor & color);
-
-            void setMetallic(float metallic);
-            void setRoughness(float roughness);
-
-            void setEmissiveColor(const ofFloatColor & color);
-            void setEmissiveIntensity(float intensity);
-
             void setAlbedoMap(shared_ptr<ofTexture> tex);
             void setNormalMap(shared_ptr<ofTexture> tex);
             void setMetalnessMap(shared_ptr<ofTexture> tex);
@@ -45,17 +37,22 @@ namespace ofxRenderToolkit
 
             std::string name;
 
-            ofFloatColor baseColor;
-            float metallic;
-            float roughness;
-            ofFloatColor emissiveColor;
-            float emissiveIntensity;
+			ofParameter<ofFloatColor> baseColor;
+			ofParameter<float> metallic;
+			ofParameter<float> roughness;
+			ofParameter<ofFloatColor> emissiveColor;
+			ofParameter<float>emissiveIntensity;
+
+			ofParameterGroup parameters;
 
             // TODO: Texture not implemented yet.
             ofPtr<ofTexture> texAlbedo;
             ofPtr<ofTexture> texNormal;
             ofPtr<ofTexture> texMetalness;
             ofPtr<ofTexture> texRoughness;
+
+		protected:
+			vector<ofEventListener> eventListeners;
         };
     }
 }

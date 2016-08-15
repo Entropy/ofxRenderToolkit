@@ -74,7 +74,9 @@ namespace ofxRenderToolkit
             void debugDrawOccupiedClusters(const ofCamera& _camera);
 
         public:
-            float ambientIntensity;
+            ofParameter<float> ambientIntensity;
+
+			ofParameterGroup parameters;
 
         private:
             std::vector<PointLight> pointLights;

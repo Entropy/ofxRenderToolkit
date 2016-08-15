@@ -10,7 +10,11 @@ namespace ofxRenderToolkit
             : binding(DEFAULT_LIGHT_UBO_BINDING)
             , lightIndexTexUnit(DEFAULT_LIGHT_INDEX_TEX_UNIT)
             , lightPointerTexUnit(DEFAULT_LIGHT_POINTER_TEX_UNIT)
-        {}
+			, ambientIntensity("Ambient Intensity", 0.0f, 0.0f, 3.0f)
+        {
+			this->parameters.setName("Lighting");
+			this->parameters.add(ambientIntensity);
+        }
 
         //--------------------------------------------------------------
         System::~System()
